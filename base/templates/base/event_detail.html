@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<img src="{{ event.game.cover.url }}" class="img-responsive" />
+<h2>{{ event.game.name }}</h2>
+
+<h1>{{ event.name }}</h1>
+<p>{{ event.created }}</p>
+{% endblock content %}
