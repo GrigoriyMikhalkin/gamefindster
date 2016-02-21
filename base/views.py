@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponseRedirect
 from .models import (Game, Event)
 from .forms import EventForm
+from social.models import Participation
 
 # Create your views here.
 
@@ -11,7 +13,8 @@ def index(request):
     """
     games = Game.objects.all()
     context = {
-        "games": games
+        "games": games,
+        "request": request
     }
     return render(request,"base/index.html",context)
 
@@ -30,27 +33,28 @@ def show_game_events(request,id):
         events = paginator.page(1)
     except EmptyPage:
         events = paginator.page(paginator.num_pages)
-    
-    context = {
-        "game": game,
-        "events": events
-    }
-    return render(request,"base/game_detail.html",context)
 
-def create_event(request):
     form = EventForm(request.POST or None)
     if form.is_valid():
         instance = form.save(commit=False)
+        instance.game = game
         instance.save()
-        
+        participation = Participation(event=instance,participant=request.user,is_host=True)
+        participation.save()
+        return HttpResponseRedirect("/game/%s" % id)
+    
     context = {
+        "game": game,
+        "events": events,
+        "request": request,
         "form": form
     }
-    return render(request,"base/post_form.html", context)
+    return render(request,"base/game_detail.html",context)
 
 def show_event_details(request,id):
     event = get_object_or_404(Event, id=id)
     context = {
         "event": event,
+        "request": request
     }
     return render(request,"base/event_detail.html",context)

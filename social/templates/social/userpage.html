@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ user.username }}</h2>
+{% if user.is_active %}
+<p>Online</p>
+{% else %}
+<p>Last online: {{ user.last_login }}</p>
+{% endif %}
+<p>Email: {{ user.email }}</p>
+
+{% for event in events %}
+<div class="row">
+  <div class="col-sm-12">
+    <div class="thumbnail">
+      <div class="caption">
+	{% if event.is_host %}
+	<p>Host</p>
+	{% else %}
+	<p>Participant</p>
+	{% endif %}
+	<h3><a href="/event/{{ event.event.id }}">{{ event.event.name }}</a></h3>
+	<p>{{ event.event.description }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock content %}
