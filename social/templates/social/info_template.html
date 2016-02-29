@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for object in objects %}
+<div class="row">
+  <div class="col-sm-12">
+    <div class="thumbnail">
+      <div class="caption">
+	
+	{% if section == "messages" %}
+	<p>{{ object.text }}</p>
+
+	{% elif section == "notifications" %}
+	<a href="/social/notification/delete/{{ object.id }}" class="btn btn-primary btn-sm" role="button">Delete</a>
+	<p>{{ object.text }}</p>
+	    {% if object.type == "application" %}
+	    <a href="/social/notification/accept/{{ object.application.id }}" class="btn btn-primary btn-sm" role="button">Accept</a>
+	    <a href="/social/notification/reject/{{ object.application.id }}" class="btn btn-primary btn-sm" role="button">Reject</a>
+	    {% elif object.type == "acceptance" %}
+	    <a href="/event/{{ object.application.event.id }}" class="btn btn-primary btn-sm" role="button">View event</a>
+	    {% endif %}
+	
+	{% elif section == "events" %}
+	<h3><a href="/event/{{ object.event.id }}">{{ object.event.name }}</a></h3>
+	<p>{{ object.event.participation_set.count }}/{{ event.participant_number }} participants</p>
+	<p>{{ object.event.description }}</p>
+
+	{% elif section == "contacts" %}
+	<p>{{ object.friend.username }}</p>
+	
+	{% endif %}
+	
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if objects.has_previous %}
+            <a href="?page={{ objects.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ objects.number }} of {{ objects.paginator.num_pages }}.
+        </span>
+
+        {% if objects.has_next %}
+            <a href="?page={{ objects.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock content %}

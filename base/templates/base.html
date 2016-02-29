@@ -8,37 +8,42 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
   </head>
   <body>
-
-    <div class="navbar navbar-default fixed-top">
-      <div class = "container">
-	<a href="#" class="btn btn-success navbar-left" id="menu-toggle">Toggle Menu</a>
-	{% if request.user.is_authenticated %}
-	<a href="/social/user/{{ request.user.id }}"><h3 class="navbar-text">{{ request.user.username }}</h3></a>
-	<ul class="nav navbar-nav navbar-right">
-	  <li><a href="/accounts/logout/">logout</a></li>
-        </ul>
-        {% else %}
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="/accounts/login/">login</a></li>
-          <li><a href="/accounts/register/">register</a></li>
-	</ul>
-	{% endif %}
-      </div>
-    </div>
-
     <div id="wrapper">
-      <div id="sidebar">
+      <header class="main-header">
+	<nav class="navbar navbar-static-top" role="navigation">
+	  <a href="#" class="btn navbar-left btn-lg" id="menu-toggle"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a>
+	  <div class="navbar-custom-menu">
+	    {% if request.user.is_authenticated %}
+	    <a href="/social/user/{{ request.user.id }}"><h3 class="navbar-text">{{ request.user.username }}</h3></a>
+	    <ul class="nav navbar-nav navbar-right">	    
+	      <li><a href="/accounts/logout/" class="btn btn-lg"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a></li>
+	      <li><a href="/accounts/logout/" class="btn btn-lg"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span></a></li>
+	      <li><a href="/accounts/logout/" class="btn btn-lg"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></a></li>
+            </ul>
+            {% else %}
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="/accounts/login/">login</a></li>
+              <li><a href="/accounts/register/">register</a></li>
+	    </ul>
+	    {% endif %}
+	  </div>
+	</nav>
+      </header>
+
+      <div id="sidebar" style="height:35%;">
+	<img src="/media/games/covers/not_available.gif" class="img-circle">
 	<ul class="sidebar-nav">
-	  <li><a href="/">Home</a></li>
-	  <li><a href="#">Events</a></li>
-	  <li><a href="#">Messages</a></li>
-	  <li><a href="#">Contacts</a></li>
+	  <center><li><h3><a href="/">Home</a></h3></li></center>
+	  <center><li><h3><a href="/social/events/">Events</a></h3></li></center>
+	  <center><li><h3><a href="/social/messages/">Messages</a></h3></li></center>
+	  <center><li><h3><a href="/social/notifications/">Notifications</a></h3></li></center>
+          <center><li><h3><a href="/social/contacts/">Contacts</a></h3></li></center>
 	</ul>
       </div>
-    
+      
       <div class="container">
 	{% block content %}
-      
+	
 	{% endblock content %}
       </div>
     </div>

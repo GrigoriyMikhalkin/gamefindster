@@ -32,6 +32,8 @@ class Event(models.Model):
     game = models.ForeignKey(Game)
     name = models.CharField(max_length=512)
     description = models.TextField()
+    participant_number = models.PositiveSmallIntegerField(default=2)
+    is_full = models.BooleanField(default=False)
 
     """
     TODO OP user and participants

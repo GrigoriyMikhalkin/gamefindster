@@ -18,12 +18,9 @@ def index(request):
     }
     return render(request,"base/index.html",context)
 
-def show_events(request):
-    pass
-
 def show_game_events(request,id):
     game = get_object_or_404(Game, id=id)
-    event_list = game.event_set.all()
+    event_list = game.event_set.filter(is_full=False)
     paginator = Paginator(event_list,25)
 
     page = request.GET.get('page')

@@ -2,6 +2,10 @@
 
 {% block content %}
 <h2>{{ user.username }}</h2>
+<a href="/social/message/send/{{ object.application.id }}" class="btn btn-primary btn-sm" role="button">Send message</a>
+<a href="/social/notification/reject/{{ object.application.id }}" class="btn btn-primary btn-sm" role="button">Invite to event</a>
+<a href="/social/notification/friend/{{ user.id }}" class="btn btn-primary btn-sm" role="button">Add to friends</a>
+<a href="/social/notification/reject/{{ object.application.id }}" class="btn btn-primary btn-sm" role="button">Invite to group</a>
 {% if user.is_active %}
 <p>Online</p>
 {% else %}

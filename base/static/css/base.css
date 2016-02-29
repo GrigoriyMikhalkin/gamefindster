@@ -1,20 +1,40 @@
+.main-header{
+    margin-left: 250px;
+}
+
+.navbar-right{
+    margin-right: 20%;
+}
+
+.btn{
+    padding-top:1%;
+}
+
+.img-circle{
+    height: 25%;
+    margin-top: 5%;
+    margin-left: 5%;
+}
 
 #sidebar{
     z-index: 1;
     position: absolute;
-    width: 0;
-    height: 100%;
+    width: 250px;
     overflow-y: hidden;
-    background: #2C3E50;
-    
+    background: #2C3E55;    
 }
 
 #wrapper.menuDisplayed #sidebar{
-    width: 250px;
+    width: 0;
+}
+
+#wrapper.menuDisplayed .main-header{
+    margin-left: 0;
 }
 
 .sidebar-nav{
-    padding: 0;
+    margin-top: 15%;
+    margin-right: 10%;
     list-style: none;
 }
 
@@ -30,5 +50,6 @@
 }
 
 .sidebar-nav li a:hover{
-    background: #16A085;
+    height:30px;
 }
+
