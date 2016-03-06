@@ -23,7 +23,9 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include("base.urls")),
     url(r'^accounts/', include("accounts.urls")),
-    url(r'^social/', include("social.urls"))
+    url(r'^accounts/', include("registration.backends.hmac.urls")),
+    url(r'^social/', include("my_social.urls")),
+    url('', include('social.apps.django_app.urls', namespace='social')),
 ]
 
 if settings.DEBUG:

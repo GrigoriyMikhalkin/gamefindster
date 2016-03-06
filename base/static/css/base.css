@@ -1,9 +1,11 @@
-.main-header{
-    margin-left: 250px;
+body { padding-top: 50px; }
+
+.navbar-left{
+    margin-left: 11%;
 }
 
 .navbar-right{
-    margin-right: 20%;
+    margin-right: 18%;
 }
 
 .btn{
@@ -11,17 +13,29 @@
 }
 
 .img-circle{
-    height: 25%;
+    height: 20%;
     margin-top: 5%;
     margin-left: 5%;
 }
 
+#username{
+    font-size: large;
+    color: white;
+    margin-left: 10%;
+}
+
+hr{
+    background:red;
+}
+
 #sidebar{
     z-index: 1;
-    position: absolute;
-    width: 250px;
+    position: fixed;
+    width: 13.5%;
+    height: 36%;
     overflow-y: hidden;
-    background: #2C3E55;    
+    background: #3c3a41;
+    border-radius: 0px 0px 20px 0px;
 }
 
 #wrapper.menuDisplayed #sidebar{
@@ -32,9 +46,13 @@
     margin-left: 0;
 }
 
+#wrapper.menuDisplayed .navbar-right{
+    margin-right: 18.55%;
+}
+
 .sidebar-nav{
-    margin-top: 15%;
-    margin-right: 10%;
+    margin-top: 8%;
+    margin-right: 15%;
     list-style: none;
 }
 
@@ -45,6 +63,7 @@
 
 .sidebar-nav li a{
     display: block;
+    font-size: x-large;
     text-decoration: none;
     color: #ddd;
 }
@@ -52,4 +71,3 @@
 .sidebar-nav li a:hover{
     height:30px;
 }
-

@@ -1,10 +1,15 @@
 from django.db import models
+from stdimage.models import StdImageField
+from stdimage.utils import UploadToUUID
 
 # Create your models here.
     
 class Game(models.Model):
     name = models.CharField(max_length=512)
-    cover = models.FileField(upload_to="/media/games/covers/",default="/media/games/covers/not_available.gif")
+    cover = StdImageField(upload_to=UploadToUUID(path="games/covers/"),\
+                          variations={'thumbnail': {'width':100,'height':100,"crop":True},
+                                      'large': {'width':400,'height':400,"crop":True},
+                                  })
     year = models.IntegerField(blank=True, null=True)
     developer = models.CharField(
         max_length=512,blank=True, null=True)

@@ -3,11 +3,13 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect
 from .models import (Game, Event)
 from .forms import EventForm
-from social.models import Participation
+from my_social.models import Participation
+from endless_pagination.decorators import page_template
 
 # Create your views here.
 
-def index(request):
+@page_template("base/games_index_page.html")
+def index(request,template="base/index.html",extra_context=None):
     """
     Shows scrollable list of most popular games
     """
@@ -16,7 +18,10 @@ def index(request):
         "games": games,
         "request": request
     }
-    return render(request,"base/index.html",context)
+    if extra_context is not None:
+        context.update(extra_context)
+        
+    return render(request,template,context)
 
 def show_game_events(request,id):
     game = get_object_or_404(Game, id=id)

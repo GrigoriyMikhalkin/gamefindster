@@ -10,11 +10,14 @@
   <body>
     <div id="wrapper">
       <header class="main-header">
-	<nav class="navbar navbar-static-top" role="navigation">
-	  <a href="#" class="btn navbar-left btn-lg" id="menu-toggle"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a>
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	  {% if request.user.is_authenticated %}
+	  <a class="btn navbar-left btn-lg" data-toggle="collapse" data-target=".collapseSidebar"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a>
+	  {% else %}
+	  <a href="/" class="btn navbar-left btn-lg"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a>
+	  {% endif %}
 	  <div class="navbar-custom-menu">
 	    {% if request.user.is_authenticated %}
-	    <a href="/social/user/{{ request.user.id }}"><h3 class="navbar-text">{{ request.user.username }}</h3></a>
 	    <ul class="nav navbar-nav navbar-right">	    
 	      <li><a href="/accounts/logout/" class="btn btn-lg"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a></li>
 	      <li><a href="/accounts/logout/" class="btn btn-lg"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span></a></li>
@@ -30,8 +33,13 @@
 	</nav>
       </header>
 
-      <div id="sidebar" style="height:35%;">
-	<img src="/media/games/covers/not_available.gif" class="img-circle">
+      {% if request.user.is_authenticated %}
+      <div id="sidebar" class="collapseSidebar">
+	<div id="userinfo">
+	  <img src="/media/games/covers/not_available.gif" class="img-circle">
+	  <a href="/social/user/{{ request.user.id }}" id="username">{{ request.user.username }}</a>
+	</div>
+	<hr>
 	<ul class="sidebar-nav">
 	  <center><li><h3><a href="/">Home</a></h3></li></center>
 	  <center><li><h3><a href="/social/events/">Events</a></h3></li></center>
@@ -40,6 +48,7 @@
           <center><li><h3><a href="/social/contacts/">Contacts</a></h3></li></center>
 	</ul>
       </div>
+      {% endif %}
       
       <div class="container">
 	{% block content %}
@@ -51,9 +60,12 @@
     {% block modals %}
     {% endblock modals %}
 
+    {% block js %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/endless-pagination.js' %}"></script>
+    {% endblock js %}
   </body>
 </html>

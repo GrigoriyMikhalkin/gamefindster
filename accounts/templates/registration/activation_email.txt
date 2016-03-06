@@ -1,0 +1,6 @@
+Hi, it's GamePartners!
+Recently there been attempt to register account with your email. If it was you please follow instructions below. Otherwise just skip this message.
+
+Follow link below to activate your account, notice that it will be active only for 3 days
+
+{{ site.domain }}/accounts/activate/{{ activation_key }}

@@ -20,8 +20,8 @@ class UserInfo(models.Model):
 
 
 class Friend(models.Model):
-    user_id = models.PositiveIntegerField(User) # represents User's ID
-    friend = models.ForeignKey(User)
+    user = models.ForeignKey(User,related_name="friends") # represents User's ID
+    friend = models.ForeignKey(User,related_name="friend_set")
 
     def __unicode__(self):
         return self.user_id
@@ -52,34 +52,50 @@ class Participation(models.Model):
 
     
 class Message(models.Model):
-    receiver = models.ForeignKey(User, related_name="receivers")
-    sender = models.ForeignKey(User, related_name="senders")
-    text = models.TextField()
-    label = models.CharField(max_length=256)
-    prev_message = models.ForeignKey('self', null=True)
-    created = models.DateTimeField(auto_now_add=True,verbose_name='date started')
-
-class Notification(models.Model):
-    receiver = models.ForeignKey(User)
-    type = models.CharField(max_length=64)
+    receiver = models.ForeignKey(User, related_name="received")
+    sender = models.ForeignKey(User, related_name="sended")
     text = models.TextField()
     created = models.DateTimeField(auto_now_add=True,verbose_name='date started')
 
     class Meta:
         ordering = ["-created"]
 
+
+    
+class Notification(models.Model):
+    receiver = models.ForeignKey(User)
+    type = models.CharField(max_length=64)
+    label = models.CharField(max_length=256)
+    text = models.TextField(null=True)
+    created = models.DateTimeField(auto_now_add=True,verbose_name='date started')
+
+    class Meta:
+        ordering = ["-created"]
+
+class EventNotification(models.Model):
+    notification = models.OneToOneField(Notification,related_name="event_notification")
+    notification_subject = models.ForeignKey(Event)
+
+class GroupNotification(models.Model):
+    notification = models.OneToOneField(Notification,related_name="group_notification")
+    notification_subject = models.ForeignKey(Group)
+
+class FriendNotification(models.Model):
+    notification = models.OneToOneField(Notification,related_name="friend_notification")
+    notification_subject = models.ForeignKey(User)
+
 class Request(models.Model):
     notification = models.OneToOneField(Notification)
     requester = models.ForeignKey(User)
         
-class Application(models.Model):
-    notification = models.OneToOneField(Request)
-    event = models.ForeignKey(Event)
+class EventApplication(models.Model):
+    request = models.OneToOneField(Request,related_name="event_application")
+    request_class = models.ForeignKey(Event)
 
 class GroupApplication(models.Model):
-    notification = models.OneToOneField(Request)
-    event = models.ForeignKey(Group)
+    request = models.OneToOneField(Request,related_name="group_application")
+    request_class = models.ForeignKey(Group)
 
 class FriendApplication(models.Model):
-    notification = models.OneToOneField(Request)
-    friend = models.ForeignKey(User)    
+    request = models.OneToOneField(Request,related_name="friend_application")
+    request_class = models.ForeignKey(User)    

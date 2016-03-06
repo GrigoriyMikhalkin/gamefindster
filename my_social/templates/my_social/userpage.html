@@ -2,10 +2,13 @@
 
 {% block content %}
 <h2>{{ user.username }}</h2>
-<a href="/social/message/send/{{ object.application.id }}" class="btn btn-primary btn-sm" role="button">Send message</a>
+{% if request.user.is_authenticated %}
+<a href="#message" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Send message</a>
 <a href="/social/notification/reject/{{ object.application.id }}" class="btn btn-primary btn-sm" role="button">Invite to event</a>
-<a href="/social/notification/friend/{{ user.id }}" class="btn btn-primary btn-sm" role="button">Add to friends</a>
+<a href="/social/application/friend/{{ user.id }}" class="btn btn-primary btn-sm" role="button">Add to friends</a>
 <a href="/social/notification/reject/{{ object.application.id }}" class="btn btn-primary btn-sm" role="button">Invite to group</a>
+{% endif %}
+
 {% if user.is_active %}
 <p>Online</p>
 {% else %}
@@ -32,3 +35,23 @@
 {% endfor %}
 
 {% endblock content %}
+
+{% if request.user.is_authenticated %}
+{% block modals %}
+
+<div class="modal fade" id="message" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+	<form method='POST'>{% csrf_token %}
+	  {{ form.media }}
+	  {{ form.as_p }}
+	  <input type='submit' value='Send message' />
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock modals %}
+{% endif %}

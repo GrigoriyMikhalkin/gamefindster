@@ -1,19 +1,16 @@
 {% extends "base.html" %}
+{% load endless %}
 
 {% block content %}
 
-<div class="row">
-{% for game in games %}
-  <div class="col-md-4">
-    <div class="thumbnail">
-      <img src="{{ game.cover.url }}" class="img-responsive" />
-      <div class="caption">
-        <h3><a href="/game/{{ game.id }}">{{ game.name }}</a></h3>
-	<p> {{ game.number_of_events }} events is active</p>
-        <p><a href="/game/{{ game.id }}" class="btn btn-primary" role="button">View</a></p>
-      </div>
-    </div>
-  </div>
-{% endfor %}
-</div>
+{% include page_template %}
+
 {% endblock content %}
+
+{% block js %}
+{{ block.super }}
+<script>$.endlessPaginate({
+  paginateOnScroll: true,
+  paginateOnScrollMargin: 20
+  });</script>
+{% endblock js %}

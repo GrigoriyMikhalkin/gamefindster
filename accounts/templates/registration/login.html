@@ -4,15 +4,8 @@
 
 {% block content %}
 
-<form action="/accounts/auth/" method="POST">{% csrf_token %}
-  <p>
-    <label for="username">Username:</label>
-    <input type="text" name="username" value="" id="username" style="margin-left:0%;">
-  </p>
-  <p>
-    <label for="password">Password:</label>
-    <input type="text" name="password" value="" id="password">
-  </p>
+<form action="/accounts/login/" method="POST">{% csrf_token %}
+  {{ form.as_p }}
   <input type='submit' value='Login' />
 </form>
 
