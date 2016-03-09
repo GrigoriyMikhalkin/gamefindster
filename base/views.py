@@ -60,3 +60,7 @@ def show_event_details(request,id):
         "request": request
     }
     return render(request,"base/event_detail.html",context)
+
+def search_games(request):
+    q = request.POST.get("q")
+    

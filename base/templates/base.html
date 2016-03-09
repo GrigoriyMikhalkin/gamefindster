@@ -18,7 +18,12 @@
 	  {% endif %}
 	  <div class="navbar-custom-menu">
 	    {% if request.user.is_authenticated %}
-	    <ul class="nav navbar-nav navbar-right">	    
+	    <ul class="nav navbar-nav navbar-right">
+	      <li>
+		<form method="POST" action="/search" id="search">
+		  <input name="q" size="40" type="text" placeholder="Search games..." style="margin-top:3%"/>
+		</form>
+	      </li>
 	      <li><a href="/accounts/logout/" class="btn btn-lg"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a></li>
 	      <li><a href="/accounts/logout/" class="btn btn-lg"><span class="glyphicon glyphicon-bell" aria-hidden="true"></span></a></li>
 	      <li><a href="/accounts/logout/" class="btn btn-lg"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></a></li>
@@ -36,8 +41,12 @@
       {% if request.user.is_authenticated %}
       <div id="sidebar" class="collapseSidebar">
 	<div id="userinfo">
+	  {% if request.user.info.currentpic == None %}
 	  <img src="/media/games/covers/not_available.gif" class="img-circle">
-	  <a href="/social/user/{{ request.user.id }}" id="username">{{ request.user.username }}</a>
+	  {% else %}
+	  <img src="{{ request.user.info.currentpic.avatar.thumbnail.url }}" class="img-circle">
+	  {% endif %}
+	  <a href="/social/user/{{ request.user.id }}" id="username">{{ request.user.username|truncatechars:16 }}</a>
 	</div>
 	<hr>
 	<ul class="sidebar-nav">

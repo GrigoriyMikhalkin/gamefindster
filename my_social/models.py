@@ -4,21 +4,6 @@ from base.models import Event
 
 # Create your models here.
 
-"""
-class UserInfo(models.Model):
-    avatar_image
-    status_message
-    page_privacy_setting
-    message_senders_setting
-
-    def __unicode__(self):
-        return self.name
-
-    def __str__(self):
-        return self.name
-"""
-
-
 class Friend(models.Model):
     user = models.ForeignKey(User,related_name="friends") # represents User's ID
     friend = models.ForeignKey(User,related_name="friend_set")

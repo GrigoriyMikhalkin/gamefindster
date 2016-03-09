@@ -1,14 +1,32 @@
 {% extends "base.html" %}
 
+{% load static from staticfiles %}
+
 {% block content %}
-<h2>{{ user.username }}</h2>
+<div class="user_info">
+  <div class="col-md-3">
+    <div class="thumbnail">
+{% if user.info.currentpic == None %}
+        <img src="/media/user/pic/no_pic.png" class="img-responsive">
+{% else %}
+	<a href="#gallery" data-toggle="modal"><img src="{{ user.info.currentpic.avatar.large.url }}" class="img-responsive" /></a>
+{% endif %}
 {% if request.user.is_authenticated %}
+{% if request.user == user %}
+<center><a href="#profilepic" data-toggle="modal">set new profile image</a></center>
+{% endif %}
+    </div>
+  </div>
+<h2>{{ user.username }}</h2>
+{% if request.user != user %}
 <a href="#message" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Send message</a>
 <a href="/social/notification/reject/{{ object.application.id }}" class="btn btn-primary btn-sm" role="button">Invite to event</a>
 <a href="/social/application/friend/{{ user.id }}" class="btn btn-primary btn-sm" role="button">Add to friends</a>
 <a href="/social/notification/reject/{{ object.application.id }}" class="btn btn-primary btn-sm" role="button">Invite to group</a>
 {% endif %}
-
+{% endif %}
+</div>
+  
 {% if user.is_active %}
 <p>Online</p>
 {% else %}
@@ -39,12 +57,13 @@
 {% if request.user.is_authenticated %}
 {% block modals %}
 
+{% if request.user != user %}
+
 <div class="modal fade" id="message" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-body">
 	<form method='POST'>{% csrf_token %}
-	  {{ form.media }}
 	  {{ form.as_p }}
 	  <input type='submit' value='Send message' />
 	</form>
@@ -53,5 +72,78 @@
   </div>
 </div>
 
+<div class="modal fade" id="gallery" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" id="large-image-header">
+	<center><img src="#" id="large-image"></center>
+      </div>
+      <div class="modal-body" id="gallery-body">
+	<div class="row">
+	  {% for pic in user.userpic_set.all %}
+	  <div class="col-md-3">
+	    <div class="thumbnail">
+	      <a class="modal-pic" data-large="{{ pic.avatar.xlarge.url }}"><img src="{{ pic.avatar.large.url }}" class="img-responsive"></a>
+	    </div>
+	  </div>
+	  {% endfor %}
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+
+<div class="modal fade" id="profilepic" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" id="preview-header">
+	<img src="#" id="img_preview">
+      </div>
+      <div class="modal-body" id="profilepic-body">
+	<form method='POST' enctype="multipart/form-data">{% csrf_token %}
+	  {{ form.as_p }}
+	  <input type='submit' value='Save' />
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="gallery" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" id="large-image-header">
+	<center><img src="#" id="large-image"></center>
+      </div>
+      <div class="modal-body" id="gallery-body">
+	<div class="row">
+	  {% for pic in user.userpic_set.all %}
+	  <div class="col-md-3">
+	    <div class="thumbnail">
+	      <a class="modal-pic" data-large="{{ pic.avatar.xlarge.url }}"><img src="{{ pic.avatar.large.url }}" class="img-responsive"></a>
+	      <div class="caption">
+		{% if pic != user.info.currentpic %}
+		<a href="/accounts/picture/change/{{ pic.id }}" class="btn btn-primary" role="button">Select</a>
+		{% endif %}
+		<a href="/accounts/picture/delete/{{ pic.id }}" class="btn btn-primary" role="button">Delete</a>
+	      </div>
+	    </div>
+	  </div>
+	  {% endfor %}
+	</div>
+      </div>
+    </div>
+  </div>
+</div> 
+{% endif %}
+
+{% block js %}
+{{ block.super }}
+<script src="{% static 'js/userpage.js' %}"></script>
+{% endblock js %}
+
 {% endblock modals %}
+
 {% endif %}

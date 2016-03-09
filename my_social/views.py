@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.models import User
 from .models import *
-from .forms import MessageForm
+from .forms import MessageForm, UserPicForm
 from base.models import Event
 from .Messaging.NotificationSender import *
 from django.db.models import Q, Max
@@ -17,15 +17,25 @@ NOTIFICATION_TYPES = {
 def user_page(request,id):
     user = get_object_or_404(User,id=id)
     events = user.participation_set.all()
-
-    form = MessageForm(request.POST or None)
-    if form.is_valid():
-        instance = form.save(commit=False)
-        instance.receiver = user
-        instance.sender = request.user
-        instance.save()
-        return HttpResponseRedirect("/social/user/%s" % id)
-
+    
+    if request.user != user: 
+        form = MessageForm(request.POST or None)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.receiver = user
+            instance.sender = request.user
+            instance.save()
+            return HttpResponseRedirect("/social/user/%s" % id)
+    else:    
+        form = UserPicForm(request.POST or None, request.FILES or None)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = user
+            instance.save()
+            user.info.currentpic = instance
+            user.info.save()
+            return HttpResponseRedirect("/social/user/%s" % id)
+    
     context = {
         "user": user,
         "events": events,

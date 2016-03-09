@@ -1,18 +1,15 @@
-from django import forms
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from .models import *
+from registration.backends.hmac.views import ActivationView
 
-class RegistrationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+class mActivationView(ActivationView):
 
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password1', 'password2')
+    def activate(self, *args, **kwargs):
+        user = super().activate(*args,**kwargs)
 
-    def save(self,commit=True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
+        if user:
+            user_info = UserInfo(user=user)
+            user_settings = UserSettings(user=user)
+            user_info.save()
+            user_settings.save()
 
-        if commit:
-            user.save()
         return user
