@@ -23,6 +23,8 @@ urlpatterns = [
         name='registration_register'),
     url(r'^picture/change/(?P<pid>\d+)$', views.pic_change),
     url(r'^picture/delete/(?P<pid>\d+)$', views.pic_delete),
+    url(r'^login/$', views.login),
     url(r'^logout/$', views.logout),
-    url(r'^profile/$', views.redirect_home)
+    url(r'^profile/$', views.redirect_home),
+    url(r'^settings/(?P<uid>\d+)$', views.user_settings),
 ]

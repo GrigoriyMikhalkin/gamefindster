@@ -1,5 +1,5 @@
 from django import forms
-from .models import Message
+from .models import *
 from accounts.models import UserPic
 
 class MessageForm(forms.ModelForm):
@@ -21,4 +21,25 @@ class UserPicForm(forms.ModelForm):
         fields = [
             "avatar",
             "signing",
+        ]
+
+
+class GroupPicForm(forms.ModelForm):
+    signing = forms.CharField(required=False)
+
+    class Meta:
+        model = GroupPic
+        fields = [
+            "avatar",
+            "signing",
+        ]
+
+
+class GroupForm(forms.ModelForm):
+
+    class Meta:
+        model = Group
+        fields = [
+            "group_name",
+            "description",
         ]

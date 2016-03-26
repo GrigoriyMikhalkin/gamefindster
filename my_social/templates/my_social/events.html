@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+{% for object in objects %}
+
+<div class="thumbnail" style="border-radius:20px;background:#B0E0E6;margin-top:2%">
+  <div class="row">
+    <div class="col-md-2">
+      <a href="/game/{{ object.event.game.id }}">
+	<img src="{{ object.event.game.cover.thumbnail.url }}" class="img-responsive" alt="{{ object.event.game.name }}" style="margin-top:3%;border-radius:10px 0px 0px 10px"/>
+      </a>
+    </div>
+    <div class="col-md-9" style="margin-top:-1%">
+      <h3><a href="/event/{{ object.event.id }}">{{ object.event.name }}</a>({{object.event.game.name}})</h3>
+      <div class="user-role" style="color:#0087BD">
+	{% if object.event.owner %}
+	<p>{% trans "Host" %}</p>
+	{% else %}
+	<p>{% trans "Participant" %}</p>
+	{% endif %}
+      </div>
+      <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ object.event.start_time }}<p>
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+
+{% endblock content %}

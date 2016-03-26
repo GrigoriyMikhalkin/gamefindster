@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+
+{% block content %}
+<div class="row">
+  <div class="user_info">
+    <div class="col-md-3">
+      <div class="thumbnail">
+	{% if group.currentpic.currentpic == None %}
+        <img src="/media/user/pic/no_pic.png" class="img-responsive">
+	{% else %}
+	<a href="#gallery" data-toggle="modal"><img src="{{ group.currentpic.currentpic.avatar.large.url }}" class="img-responsive" /></a>
+	{% endif %}
+	{% if request.user.is_authenticated %}
+	{% if request.user == group.owner %}
+	<center><a href="#profilepic" data-toggle="modal">set new profile image</a></center>
+	{% endif %}
+      </div>
+    </div>
+    <h2>{{ group.group_name }}</h2>
+    {% if participant == None %}
+    <a href="/social/application/group/{{ group.id }}" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Apply to group</a>
+    {% elif participant.admin %}
+    <a href="#message" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Create new event</a>
+    <a href="#message" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Broadcast message</a>
+    {% endif %}
+    {% if request.user == group.owner %}
+    <a href="#add-admin" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Add admin</a>
+    <a href="#cancel-group" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Close group</a>
+    {% endif %}
+    {% endif %}
+  </div>
+  
+  <p style="margin-top:3%">{{ group.description }}</p>
+</div>
+
+<div class="row">
+
+  <h4 style="color:blue">Members</h4>
+
+  <div id="members" class="col-sm-3">
+    <div class="row">
+	{% for participation in group.groupparticipation_set.all %}
+	<div class="col-sm-6">
+	  <div class="thumbnail">
+	    <div class="caption">
+	      {% if participation.participant.info.currentpic == None %}
+	      <img src="/media/user/pic/not_available.gif" class="img-responsive">
+	      {% else %}
+	      <img src="{{ participation.participant.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" />
+	      {% endif%}
+	      <center><a href="/social/user/{{ participation.participant.id }}">{{ participation.participant.username|truncatechars:12 }}</a></center>
+	    </div>
+	  </div>
+	</div>
+	{% endfor %}
+    </div>
+  </div>
+  
+  <div id="group-events" class="col-sm-9">
+    {% for event in group_events %}
+    <div class="thumbnail">
+      <div class="caption">
+	<h3><a href="/event/{{ event.event.id }}">{{ event.event.name }}</a></h3>
+	<p>{{ event.event.game }}</p>
+	<p>{{ event.event.description }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+  
+{% endblock content %}
+
+{% if request.user.is_authenticated %}
+{% block modals %}
+
+{% if participant == None %}
+
+<div class="modal fade" id="message" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+	<form method='POST'>{% csrf_token %}
+	  {{ form.as_p }}
+	  <input type='submit' value='Apply' />
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+{% if request.user != group.owner %}
+
+<div class="modal fade" id="gallery" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" id="large-image-header">
+	<center><img src="#" id="large-image"></center>
+      </div>
+      <div class="modal-body" id="gallery-body">
+	<div class="row">
+	  {% for pic in group.grouppic_set.all %}
+	  <div class="col-md-3">
+	    <div class="thumbnail">
+	      <a class="modal-pic" data-large="{{ pic.avatar.xlarge.url }}"><img src="{{ pic.avatar.large.url }}" class="img-responsive"></a>
+	    </div>
+	  </div>
+	  {% endfor %}
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+
+<div class="modal fade" id="profilepic" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" id="preview-header">
+	<img src="#" id="img_preview">
+      </div>
+      <div class="modal-body" id="profilepic-body">
+	<form method='POST' enctype="multipart/form-data">{% csrf_token %}
+	  {{ form.as_p }}
+	  <input type='submit' value='Save' />
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="gallery" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" id="large-image-header">
+	<center><img src="#" id="large-image"></center>
+      </div>
+      <div class="modal-body" id="gallery-body">
+	<div class="row">
+	  {% for pic in group.grouppic_set.all %}
+	  <div class="col-md-3">
+	    <div class="thumbnail">
+	      <a class="modal-pic" data-large="{{ pic.avatar.xlarge.url }}"><img src="{{ pic.avatar.large.url }}" class="img-responsive"></a>
+	      <div class="caption">
+		{% if pic != group.currentpic.currentpic %}
+		<a href="/accounts/picture/change/{{ pic.id }}" class="btn btn-primary" role="button">Select</a>
+		{% endif %}
+		<a href="/accounts/picture/delete/{{ pic.id }}" class="btn btn-primary" role="button">Delete</a>
+	      </div>
+	    </div>
+	  </div>
+	  {% endfor %}
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="cancel-group" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+	<form action="/social/group/cancel/{{ group.id }}" method='POST'>{% csrf_token %}
+	  <b><p>Send message to other participants to explain why you decided to close this group:</p></b>
+	  <textarea id="cancel-group-message" name="cancel-text" rows="10" cols="40"></textarea>
+	  <p><input type='submit' value='Close group' /></p>
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+{% block js %}
+{{ block.super }}
+<script src="{% static 'js/userpage.js' %}"></script>
+{% endblock js %}
+
+{% endblock modals %}
+
+{% endif %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load endless %}
+
+{% block content %}
+
+{% include "search/games_search_page.html" %}
+
+{% endblock content %}
+
+{% block js %}
+{{ block.super }}
+<script>$.endlessPaginate({
+  paginateOnScroll: true,
+  paginateOnScrollMargin: 20
+  });</script>
+{% endblock js %}

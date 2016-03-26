@@ -1,20 +1,21 @@
 {% extends "base.html" %}
 
 {% load static from staticfiles %}
+{% load i18n %}
 
 {% block content %}
 
 <form action="/accounts/login/" method="POST">{% csrf_token %}
   {{ form.as_p }}
-  <input type='submit' value='Login' />
+  <input type='submit' value={% trans "Login" %} />
 </form>
 
 <h4>
-  Or login with your existing account in one of the following services:
+  {% trans "Or login with your existing account in one of the following services" %}:
 </h4>
 <a href="{% url 'social:begin' 'facebook' %}"><img src="{% static 'images/FaceBook_32x32.png' %}" alt="Facebook" /></a>
 <a href="{% url 'social:begin' 'twitter' %}"><img src="{% static 'images/Twitter_32x32.png' %}" alt="Twitter" /></a>
 <a href="{% url 'social:begin' 'google-oauth2' %}"><img src="{% static 'images/Google_32x32.png' %}" alt="Google" /></a>
-<a href="{% url 'social:begin' 'yandex-oauth2' %}"><img src="{% static 'images/Yandex_32x32.png' %}" alt="Yandex" /></a>
+<a href="{% url 'social:begin' 'yandex-oauth2' %}"><img src="{% static 'images/Yandex_32x32.png' %}" alt={% trans "Yandex" %} /></a>
 
 {% endblock content %}

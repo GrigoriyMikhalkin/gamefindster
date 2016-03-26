@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from stdimage.models import StdImageField
 from stdimage.utils import UploadToUUID
+from base.models import Platform, Event
 
 # Create your models here.
 class UserPic(models.Model):
@@ -17,12 +18,15 @@ class UserPic(models.Model):
 class UserInfo(models.Model):
     user = models.OneToOneField(User,related_name="info")
     full_name = models.CharField(max_length=128,default="")
-    age = models.PositiveSmallIntegerField(null=True)
+    birthdate = models.DateField(null=True)
     sex = models.NullBooleanField(null=True) # M -- True, F -- False
     residence = models.CharField(max_length=128,default="")
     status_message = models.CharField(max_length=128,default="")
     steamid = models.CharField(max_length=128,null=True)
     currentpic = models.OneToOneField(UserPic,on_delete=models.SET_NULL,null=True)
+    timezone = models.CharField(max_length=32,null=True)
+    unread_notifications = models.PositiveSmallIntegerField(default=0)
+    unread_messages = models.PositiveSmallIntegerField(default=0)
 
 class UserSettings(models.Model):
     user = models.OneToOneField(User,related_name="settings")
@@ -31,10 +35,42 @@ class UserSettings(models.Model):
     page_privacy_setting
     message_senders_setting
     """
+
+
+class UserSearchSettings(models.Model):
+    user = models.OneToOneField(User,related_name="search_settings")
+    location = models.BooleanField(default=False)
+    time = models.BooleanField(default=False)
+    language = models.BooleanField(default=False)
+
+    beginning = models.DateTimeField(verbose_name="beginning",null=True)
+    ending = models.DateTimeField(verbose_name="ending",null=True)
+    
+
+class UserPlatform(models.Model):
+    user = models.ForeignKey(User)
+    platform = models.ForeignKey(Platform)
+
     
 class Language(models.Model):
-    pass
+    name = models.CharField(max_length=128,default="English")
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.name
 
 
 class LanguageToUser(models.Model):
-    pass 
+    user = models.ForeignKey(User,related_name="languages",null=True)
+    language = models.ForeignKey(Language,related_name="users",null=True)
+
+
+class LanguageToEvent(models.Model):
+    event = models.ForeignKey(Event,related_name="languages",null=True)
+    language = models.ForeignKey(Language,related_name="events",null=True)
+
+
+class LanguageSearchSettings(models.Model):
+    user = models.ForeignKey(User,related_name="search_languages",null=True)
+    language = models.ForeignKey(Language,null=True)

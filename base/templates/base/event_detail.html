@@ -1,9 +1,114 @@
 {% extends "base.html" %}
 
-{% block content %}
-<img src="{{ event.game.cover.url }}" class="img-responsive" />
-<h2>{{ event.game.name }}</h2>
+{% load i18n %}
 
-<h1>{{ event.name }}</h1>
-<p>{{ event.created }}</p>
+{% block content %}
+
+<div class="row">
+  <div class="col-md-4">
+    <a href="/game/{{ event.game.id }}">
+      <div class="caption">
+	<img src="{{ event.game.cover.large.url }}" class="img-responsive" />
+	<center><h2>{{ event.game.name }}</h2></center>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-8">
+    <h1>{{ event.name }}</h1>
+
+    {% if request.user.is_authenticated %}
+
+    {% if request.user == event.owner %}
+    <a href="#broadcast-event" class="btn btn-primary btn-sm" role="button" data-toggle="modal">{% trans "Broadcast message" %}</a>
+    <a href="#cancel-event" class="btn btn-primary btn-sm" role="button" data-toggle="modal">{% trans "Cancel event" %}</a>
+    {% elif participant %}
+    <a href="#message" class="btn btn-primary btn-sm" role="button" data-toggle="modal">{% trans "Leave event" %}</a>
+    {% else %}
+    <a href="/social/application/event/{{ event.id }}" class="btn btn-primary btn-sm" role="button" data-toggle="modal">{% trans "Join event" %}</a>
+    {% endif %}
+    {% endif %}
+
+    <hr>
+
+    <div class="col-md-6" style="color:grey">
+      <p>{% trans "Host" %}:</p>
+      <p>{% trans "Start time" %}:</p>
+      <p>{% trans "Platform" %}:</p>
+      <p>{% trans "Created" %}:</p>
+      <p>{% trans "Active before" %}:</p>
+    </div>
+    <div class="col-md-6" style="color:#0087BD">
+      <a href="/social/user/{{ event.owner.id }}"><p>{{ event.owner }}</p></a>
+      <p>None</p>
+      <p>None</p>
+      <p>{{ event.created }}</p>
+      <p>{{ event.before }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+
+  <div class="col-md-4">
+    <h4 style="color:white;background-color:#61768d;height:20px;text-align:center;">2 participants</h4>
+    <div class="row">
+      {% for participation in event.participation_set.all %}
+      <div class="col-md-4">
+	<div class="caption">
+	  {% if participation.participant.info.currentpic == None %}
+	  <img src="/media/user/pic/not_available.gif" class="img-responsive">
+	  {% else %}
+	  <img src="{{ participation.participant.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" />
+	  {% endif%}
+	  <center><a href="/social/user/{{ participation.participant.id }}">{{ participation.participant.username|truncatechars:12 }}</a></center>
+	</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <h3 style="margin-top:1%;color:white;background-color:grey;height:30px;text-align:center">Description</h3>
+    <h4>{{ event.description }}</h4>
+  </div>
+
+</div>
+
 {% endblock content %}
+
+{% block modals %}
+
+{% if request.user == event.owner %}
+
+<div class="modal fade" id="cancel-event" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+	<form action="/social/event/cancel/{{ event.id }}" method='POST'>{% csrf_token %}
+	  <p>Send message to other participants to explain why you decided to cancel this event:</p>
+	  <textarea id="cancel-event-message" name="cancel-text" rows="10" cols="40"></textarea>
+	  <p><input type='submit' value='Cancel event' /></p>
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="broadcast-event" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+	<form action="/social/broadcast/event/{{ event.id }}" method='POST'>{% csrf_token %}
+	  <p>Type message that you want to send to other participants of this event:</p>
+	  <textarea id="broadcast-event-message" name="broadcast-text" rows="10" cols="40"></textarea>
+	  <p><input type='submit' value='Send' /></p>
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+{% endblock modals %}

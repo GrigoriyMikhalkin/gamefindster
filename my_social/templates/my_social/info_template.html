@@ -4,16 +4,59 @@
 
 {% if section == "messages_l2" %}
 
-<form method='POST'>{% csrf_token %}
-  {{ form.media }}
-  {{ form.as_p }}
-  <input type='submit' value='Send message' />
-</form>
+<div class="row" style="margin-top:3%">
+  <div class="col-sm-12">
+    <form method='POST'>{% csrf_token %}
+      {{ form.media }}
+      {{ form.as_p }}
+      <input type='submit' value='Send message' style="margin-left:90%"/>
+    </form>
+  </div>
+</div>
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript">
+  $("form p label").hide();
+  $("#id_text").attr("rows","5");
+
+  if (navigator.userAgent.indexOf("Chrome") != -1){
+      $("#id_text").attr("cols","187");
+  }
+  else
+  {
+        $("#id_text").attr("cols","138");
+  };
+</script>
+{% endblock js %}
+
+{% elif section == "messages_l1" %}
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#">Conversations</a></li>
+  <li><a href="/social/messages_sent/">Sent</a></li>
+</ul>
+
+{% elif section == "contacts1" %}
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#">Friends</a></li>
+  <li><a href="/social/contacts_g/">Groups</a></li>
+</ul>
+
+{% elif section == "contacts2" %}
+
+<ul class="nav nav-tabs">
+  <li><a href="/social/contacts/">Friends</a></li>
+  <li class="active"><a href="#">Groups</a></li>
+</ul>
+
+<a href="#create-group" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Create new group</a>
 
 {% endif %}
 
 {% for object in objects %}
-<div class="row">
+<div class="row" style="margin-top:3%">
   <div class="col-sm-12">
     <div class="thumbnail">
       <div class="caption">
@@ -36,19 +79,25 @@
 	    {% if "application" in object.type  %}
 	    <a href="/social/notification/accept/{{ object.request.id }}" class="btn btn-primary btn-sm" role="button">Accept</a>
 	    <a href="/social/notification/reject/{{ object.request.id }}" class="btn btn-primary btn-sm" role="button">Reject</a>
-	    {% elif object.type == "event_accept" %}
+	    {% elif object.type == "event" %}
 	    <a href="/event/{{ object.event_notification.notification_subject.id }}" class="btn btn-primary btn-sm" role="button">View event</a>
-	    {% elif object.type == "friend_accept" %}
+	    {% elif object.type == "friend" %}
 	    <a href="/social/user/{{ object.friend_notification.notification_subject.id }}" class="btn btn-primary btn-sm" role="button">View user</a>
+	    {% elif object.type == "group" %}
+	    <a href="/social/group/{{ object.group_notification.notification_subject.id }}" class="btn btn-primary btn-sm" role="button">View group</a>
 	    {% endif %}
 	
 	{% elif section == "events" %}
 	<h3><a href="/event/{{ object.event.id }}">{{ object.event.name }}</a></h3>
-	<p>{{ object.event.participation_set.count }}/{{ event.participant_number }} participants</p>
+	<p>{{ object.event.participation_set.count }}/{{ object.event.participant_number }} participants</p>
 	<p>{{ object.event.description }}</p>
 
-	{% elif section == "contacts" %}
+	{% elif section == "contacts1" %}
 	<a href="/social/user/{{ object.friend.id }}">{{ object.friend.username }}</a>
+
+	{% elif section == "contacts2" %}
+	<a href="/social/group/{{ object.group.id }}">{{ object.group.group_name }}</a>
+	<p>{{ object.group.description }}</p>
 	
 	{% endif %}
 	
@@ -74,3 +123,23 @@
     </span>
 </div>
 {% endblock content %}
+
+{% if section == "contacts2" %}
+{% block modals %}
+
+<div class="modal fade" id="create-group" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+	<form method='POST'>{% csrf_token %}
+	  {{ form.media }}
+	  {{ form.as_p }}
+	  <input type='submit' value='Create group' />
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock modals %}
+{% endif %}

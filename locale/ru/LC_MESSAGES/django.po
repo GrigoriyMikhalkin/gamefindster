@@ -1,0 +1,172 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-03-26 08:41+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+msgid "MOBA by Valve"
+msgstr "МОБА от Валв"
+
+#: accounts/templates/accounts/settings.html:11
+msgid "Time zone"
+msgstr ""
+
+#: accounts/templates/accounts/settings.html:17
+msgid "Set"
+msgstr ""
+
+#: base/models.py:63
+msgid "event"
+msgstr "ивент"
+
+#: base/models.py:64
+msgid "events"
+msgstr "ивенты"
+
+#: base/templates/base/event_detail.html:23
+msgid "Broadcast message"
+msgstr "Групповое сообщение"
+
+#: base/templates/base/event_detail.html:24
+msgid "Cancel event"
+msgstr "Закрыть ивент"
+
+#: base/templates/base/event_detail.html:26
+msgid "Leave event"
+msgstr "Покинуть ивент"
+
+#: base/templates/base/event_detail.html:28
+msgid "Join event"
+msgstr "Присоединиться"
+
+#: base/templates/base/event_detail.html:35
+#: my_social/templates/my_social/events.html:20
+msgid "Host"
+msgstr "Организатор"
+
+#: base/templates/base/event_detail.html:36
+#: my_social/templates/my_social/events.html:25
+#: my_social/templates/my_social/notifications.html:34
+msgid "Start time"
+msgstr "Время начала"
+
+#: base/templates/base/event_detail.html:37
+msgid "Platform"
+msgstr "Платформа"
+
+#: base/templates/base/event_detail.html:38
+msgid "Created"
+msgstr "Создано"
+
+#: base/templates/base/event_detail.html:39
+msgid "Active before"
+msgstr "Активен до"
+
+#: base/templates/base/game_detail.html:16
+#, fuzzy
+#| msgid "Platform"
+msgid "Platforms"
+msgstr "Платформа"
+
+#: my_social/Messaging/NotificationSender.py:116
+#, python-format
+msgid "%(username)s wants to join your event %(eventname)s"
+msgstr "%(username)s хочет присоединиться к вашему ивенту %(eventname)s"
+
+#: my_social/Messaging/NotificationSender.py:117
+#, python-format
+msgid "You're accepted to participate in event '%(eventname)s'"
+msgstr ""
+
+#: my_social/Messaging/NotificationSender.py:118
+#, python-format
+msgid "You're refused to participate in event '%(eventname)s'"
+msgstr ""
+
+#: my_social/Messaging/NotificationSender.py:171
+#, python-format
+msgid "%(username)s wants to be your friend"
+msgstr ""
+
+#: my_social/Messaging/NotificationSender.py:172
+#, python-format
+msgid "%(username)s now is your friend"
+msgstr ""
+
+#: my_social/Messaging/NotificationSender.py:173
+#: my_social/Messaging/NotificationSender.py:217
+#, python-format
+msgid "%(username)s rejected your proposal"
+msgstr ""
+
+#: my_social/Messaging/NotificationSender.py:215
+#, python-format
+msgid "%(username)s wants to be group member"
+msgstr ""
+
+#: my_social/Messaging/NotificationSender.py:216
+#, python-format
+msgid "Now you're member of group '%(groupname)s'"
+msgstr ""
+
+#: my_social/Messaging/NotificationSender.py:257
+msgid "Invitation to join event"
+msgstr "Приглашение присоединиться к ивенту"
+
+#: my_social/Messaging/NotificationSender.py:258
+#, python-format
+msgid "%(username)s now participate in event '%(eventname)s'"
+msgstr "%(username)s теперь участник ивента '%(eventname)s'"
+
+#: my_social/Messaging/NotificationSender.py:259
+#, python-format
+msgid "%(username)s refused to participate in event '%(eventname)s'"
+msgstr ""
+
+#: my_social/Messaging/NotificationSender.py:307
+#, python-format
+msgid "%(username)s invites you to join group '%(groupname)s'"
+msgstr "%(username)s приглашает вас присоединиться к группе '%(groupname)s'"
+
+#: my_social/Messaging/NotificationSender.py:308
+#, python-format
+msgid "%(username)s now member of group '%(groupname)s'"
+msgstr "%(username)s теперь член группы '%(groupname)s'"
+
+#: my_social/Messaging/NotificationSender.py:309
+#, python-format
+msgid "%(username)s refused to be member of group '%(groupname)s'"
+msgstr "%(username)s отказался быть участником группы '%(groupname)s'"
+
+#: my_social/templates/my_social/events.html:22
+msgid "Participant"
+msgstr ""
+
+#: my_social/templates/my_social/notifications.html:35
+msgid "Full"
+msgstr ""
+
+#: my_social/templates/my_social/notifications.html:39
+msgid "Message"
+msgstr ""
+
+#, fuzzy
+#~| msgid "%(username)s wants to join your event %(eventname)s"
+#~ msgid "%(username)s invites you to join event '%(eventname)s'"
+#~ msgstr "%(username)s приглашает вас присоединиться к ивенту %(eventname)s"
