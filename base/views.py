@@ -6,13 +6,18 @@ from django.http import HttpResponseRedirect
 from .models import (Game, Event)
 from .forms import EventForm
 from my_social.models import Participation
-from accounts.models import Language,LanguageToEvent, UserSearchSettings
+from accounts.models import Language,LanguageToEvent,UserSearchSettings
 from endless_pagination.decorators import page_template
 from django.contrib.auth.decorators import login_required
 
 from haystack.query import SearchQuerySet
 
-# Create your views here.
+LOC_CODES = {
+    "0": "CITY",
+    "100": "REGION",
+    "200": "COUNTRY",
+    "300": "WORLD",
+}
 
 @page_template("base/games_index_page.html")
 def index(request,template="base/index.html",extra_context=None):
@@ -22,7 +27,7 @@ def index(request,template="base/index.html",extra_context=None):
     games = Game.objects.all()
     context = {
         "games": games,
-        "request": request
+        "request": request,
     }
     if extra_context is not None:
         context.update(extra_context)
@@ -33,18 +38,67 @@ def index(request,template="base/index.html",extra_context=None):
 def show_game_events(request,id):
     game = get_object_or_404(Game, id=id)
     event_list = game.event_set.filter(is_full=False,before__gt=timezone.now())
-
+    
     if request.user.is_authenticated():
+
         user_search_settings = UserSearchSettings.objects.get(user=request.user)
+
+        location_code = request.POST.get("location")
+        if location_code:
+            request.user.search_settings.location = location_code
+            request.user.search_settings.save()
+            
+        location_value = request.user.search_settings.location
+        
+        if request.POST.get("lang-filter"):
+            user_search_settings.language=True
+            user_search_settings.save()
+            
+            langs = request.POST.getlist("chk_languages[]")
+            user_languages = request.user.languages.all()
+            user_languages.filter(language__name__in=langs).update(search=True)
+            user_languages.exclude(language__name__in=langs).update(search=False)
+
+        elif request.POST.get("language-off"):
+            user_search_settings.language=False
+            user_search_settings.save()
+
+        if LOC_CODES[location_value] != "WORLD":
+            if LOC_CODES[location_value] == "CITY":
+                event_list = event_list.filter(location=request.user.info.city)
+            elif LOC_CODES[location_value] == "REGION":
+                event_list = event_list.filter(location__region=request.user.info.city.region)
+            elif LOC_CODES[location_value] == "COUNTRY":
+                event_list = event_list.filter(location__country=request.user.info.city.country)
+            
+                
         if user_search_settings.language:
-            langs = [ lang for lang in request.user.search_languages.all() ]
-            event_list = event_list.filter(languages__language__in=langs)
+            langs = [ lang.language for lang in request.user.languages.filter(search=True)]
+            event_list = event_list.filter(languages__language__in=langs).distinct()
 
         if user_search_settings.time:
             pass
 
-        if user_search_settings.location:
-            pass
+        form = EventForm(request.POST or None)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.game = game
+            instance.owner = request.user
+            instance.location = request.user.info.city
+            instance.save()
+            
+            participation = Participation(event=instance,participant=request.user,is_host=True)
+            participation.save()
+
+            languages = form.cleaned_data["languages"]
+            if len(languages) == 0:
+                instances = (LanguageToEvent(event=instance,language=lang.language) for lang in request.user.languages.all() )
+                LanguageToEvent.objects.bulk_create(instances)
+            else:
+                instances = (LanguageToEvent(event=instance,language=Language.objects.get(name=name)) for name in languages)
+                LanguageToEvent.objects.bulk_create(instances)
+            
+            return HttpResponseRedirect("/game/%s" % id)
     
     paginator = Paginator(event_list,25)
 
@@ -56,31 +110,12 @@ def show_game_events(request,id):
     except EmptyPage:
         events = paginator.page(paginator.num_pages)
 
-    form = EventForm(request.POST or None)
-    if form.is_valid():
-        instance = form.save(commit=False)
-        instance.game = game
-        instance.owner = request.user
-        instance.save()
-        
-        participation = Participation(event=instance,participant=request.user,is_host=True)
-        participation.save()
-
-        languages = form.cleaned_data["languages"]
-        if len(languages) == 0:
-            instances = ( LanguageToEvent(event=instance,language=lang) for lang in request.user.languages.all() )
-            LanguageToEvent.objects.bulk_create(instances)
-        else:
-            instances = (LanguageToEvent(event=instance,language=Language.objects.get(name=name)) for name in languages)
-            LanguageToEvent.objects.bulk_create(instances)
-        
-        return HttpResponseRedirect("/game/%s" % id)
-    
     context = {
         "game": game,
         "events": events,
         "request": request,
-        "form": form
+        "form": form,
+        "location_value": location_value,
     }
     return render(request,"base/game_detail.html",context)
 

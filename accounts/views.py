@@ -15,6 +15,12 @@ from django.shortcuts import resolve_url
 from django.utils.http import is_safe_url
 from .models import UserPic
 from django.contrib.auth.models import User
+from ipware.ip import get_real_ip
+from django.contrib.gis.geoip2 import GeoIP2
+from cities.models import City, Country
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
+
 
 def is_owner(user,pic):
     return  user == pic.user
@@ -108,19 +114,54 @@ def pic_change(request,pid):
 @login_required(login_url="/accounts/login/")
 def user_settings(request,uid):
     user = get_object_or_404(User,id=uid)
-    if user == request.user:
-        tz = request.POST.get('timezone')
-        if tz:
-            user.info.timezone = tz
-            user.info.save()
-            request.session['django_timezone'] = tz
 
-        context = {
-            "timezones": pytz.common_timezones,
-        }    
-        return render(request, "accounts/settings.html", context)
-            
-    return HttpResponseRedirect('/')
+    if user != request.user:
+        return HttpResponseRedirect('/')
+    
+    m_city = user.info.city
+    if m_city == None:
+        user_ip = get_real_ip(request)
+        g = GeoIP2()
+        location_info = g.city("213.208.167.84")
+        m_city = location_info["city"]
+        m_country = location_info["country_name"]
+
+        longitude = location_info["longitude"]
+        latitude = location_info["latitude"]
+        pnt = Point(longitude,latitude)
+
+        m_city = City.objects.get(country__name=m_country,name=m_city,location__distance_lt=(pnt,D(km=10)))
+        user.info.city = m_city
+        user.info.save()
+
+    if request.POST.get("latitude"):
+        lat = float(request.POST.get("latitude"))
+        lng = float(request.POST.get("longitude"))
+        pnt = Point(lng,lat)
+
+        m_city = City.objects.get(location__distance_lt=(pnt,D(km=2)))
+        user.info.city = m_city
+        user.info.save()
+
+    m_country = m_city.country.name
+    longitude = m_city.location.x
+    latitude = m_city.location.y
+      
+    tz = request.POST.get('timezone')
+    if tz:
+        user.info.timezone = tz
+        user.info.save()
+        request.session['django_timezone'] = tz
+        return HttpResponseRedirect('/accounts/settings/%s' % uid)
+    
+    context = {
+        "timezones": pytz.common_timezones,
+        "m_country": m_country,
+        "m_city": m_city,
+        "longitude": longitude,
+        "latitude": latitude,
+    }    
+    return render(request, "accounts/settings.html", context)
 
 
 def redirect_home(request):

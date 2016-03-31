@@ -47,14 +47,14 @@
       </div>
       <div class="col-md-6" style="color:#0087BD">
 	<p>{{ user.info.sex }}</p>
-	<p>{{ user.info.residence }} None</p>
+	<p>{{ location }}</p>
 	<p>{{ user.info.birthdate }}</p>
 	{% if user.languages.all.count == 0 %}
 	<a href="#"><p>{% trans "set at least one language for better search results" %}</p></a>
 	{% else %}
 	<p>
 	  {% for lang in user.languages.all %}
-	  {% trans lang %},
+	  {% trans lang.language.name %},
 	  {% endfor %}
 	</p>
 	{% endif %}

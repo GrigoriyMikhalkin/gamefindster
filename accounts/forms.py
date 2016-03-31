@@ -9,7 +9,9 @@ class mActivationView(ActivationView):
         if user:
             user_info = UserInfo(user=user)
             user_settings = UserSettings(user=user)
+            search_settings = UserSearchSettings(user=user)
             user_info.save()
             user_settings.save()
+            search_settings.save()
 
         return user

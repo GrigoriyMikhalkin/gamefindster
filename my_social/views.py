@@ -25,6 +25,9 @@ def user_page(request,id):
     events = user.participation_set.all()
     m_events = request.user.event_set.filter(is_active=True)
     m_groups = request.user.group_set.all()
+    city = user.info.city
+    country = city.country
+    location = country.name + ", " + city.name
     
     if request.user != user: 
         form = MessageForm(request.POST or None)
@@ -55,7 +58,8 @@ def user_page(request,id):
         "m_events": m_events,
         "m_groups": m_groups,
         "request": request,
-        "form": form
+        "form": form,
+        "location": location,
     }
     return render(request, "my_social/userpage.html", context)
 

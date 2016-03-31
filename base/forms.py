@@ -1,7 +1,7 @@
 from django import forms
 from .models import Event
 from accounts.models import Language
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 class EventForm(forms.ModelForm):
 

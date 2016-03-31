@@ -2,6 +2,22 @@
 
 {% load i18n %}
 
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/6.1.5/css/bootstrap-slider.min.css">
+<style>
+  #loc-slider .slider-track-high {
+	background: red;
+  }
+  #loc-slider .slider-tick {
+        background: red;
+}
+  #loc-slider .slider-tick.in-selection{
+        background: #81bfde;
+  }
+</style>
+{% endblock css %}
+
 {% block content %}
 
 <div class="row" style="margin-top:1%">
@@ -31,7 +47,15 @@
 <hr>
 
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-1">
+  </div>
+  <div class="col-md-3">
+    <h3 style="margin-top:1%">{% trans "you looking for events in " %}</h3>
+  </div>
+  <div class="col-md-4">
+    <form id="loc-form" method="POST">{% csrf_token %}
+      <input name="location" id="loc-change" type="text" style="width:250px;" data-slider-step="100" data-slider-value="{{ location_value }}"/>
+    </form>
   </div>
   <div class="col-md-2">
         {% if request.user.is_authenticated %}
@@ -50,6 +74,8 @@
 
 </div>
 
+<hr>
+
 {% for event in events %}
 <div class="thumbnail" style="border-radius:20px;background:#F5F5DC">
 	<div class="row">
@@ -62,6 +88,9 @@
 	    <h3><a href="/event/{{ event.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>{{ event.name }}</h3>
 	    <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ event.start_time }}<p>
 	    <p><t style="color:#0087BD">{% trans "Full" %}:</t> {{ event.participation_set.count }}/{{ event.participant_number }}</p>
+	    <p><t style="color:#0087BD">{% trans "Platform" %}:</t> {{ event.platform }}</p>
+	    <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ event.location.country }}, {{ event.location }}</p>
+	    <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for lang in event.languages.all %} {% trans lang.language.name %}, {% endfor %}</p>
 	  </div>
 	  <div class="col-md-6" style="margin-top:-1%">
 	    <h3>{% trans "Description" %}:</h3>
@@ -106,12 +135,14 @@
   </div>
 </div>
 
-<div class="modal fade" id="filter-parameters" role="dialog">
+<div class="modal fade" id="filter-parameters" role="dialog" style="width:100%">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-	<form method='POST'>{% csrf_token %}
-	  
+	<form method='POST' id="filter-params-form">{% csrf_token %}
+	  <p><b>{% trans "Apply time period filter" %}: </b><input type="checkbox" name="time-filter"/></p>
+	  <p><b>{% trans "Apply game platform filter" %}: </b><input type="checkbox" name="platform-filter" id="platform-filter" value="on" {% if request.user.search_settings.language %} checked {% endif %}/></p>
+	  <p><b>{% trans "Apply language filter" %}: </b><input type="checkbox" name="lang-filter" id="lang-filter" value="on" {% if request.user.search_settings.language %} checked {% endif %}/></p>
 	  <input type='submit' value={% trans "Apply" %} />
 	</form>
       </div>
@@ -121,4 +152,73 @@
 
 
 {% endblock modals %}
+
+{% block js %}
+{{ block.super }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/6.1.5/bootstrap-slider.min.js"></script>
+<script type="text/javascript">
+
+  // Location filter
+
+  function addLocationSlider(){
+          var element = "";
+          $(element).insertAfter("#loc-filter");  
+  }
+  
+  if ($("#loc-filter").is(":checked")) {
+      addLocationSlider();
+  }
+  
+  $("#loc-filter").click(function(){
+      if ($(this).is(":checked")) {
+          addLocationSlider();
+      }
+  
+      else {
+          $("#choose-range-div").hide();
+          var element = "<input type='hidden' name='location-off' value='off'>"; 
+          $(element).insertAfter("#loc-filter");  
+      }
+  
+  });
+  
+  // Language filter
+
+  function addLangCheckboxes(){
+          var element = "<div id='choose-lang-div' style='border:2px solid #ccc; width:300px; height: 100px; overflow-y: scroll;'>{% for lang in request.user.languages.all %} <input type='checkbox' name='chk_languages[]' value='{{ lang.language }}' {% if lang.search %} checked {% endif %}/>{{lang.language}} <br/> {% endfor %}</div>";
+          $(element).insertAfter("#lang-filter");  
+  }
+  
+  if ($("#lang-filter").is(":checked")) {
+      addLangCheckboxes();
+  }
+  
+  $("#lang-filter").click(function(){
+      if ($(this).is(":checked")) {
+          addLangCheckboxes();
+      }
+  
+      else {
+          $("#choose-lang-div").hide();
+          var element = "<input type='hidden' name='language-off' value='off'>"; 
+          $(element).insertAfter("#lang-filter");  
+      }
+  
+  });
+
+</script>
+<script type="text/javascript">
+  $("#loc-change").slider({
+      id: "loc-slider",
+      ticks: [0, 100, 200, 300],
+      ticks_labels: ['Your city', 'Your region', 'Your country', 'Worldwide'],
+      ticks_snap_bounds: 50,
+  });
+
+  $("#loc-change").on("change",function(){
+      $("#loc-form").submit();
+  });
+</script>
+
+{% endblock js %}
 {% endif %}

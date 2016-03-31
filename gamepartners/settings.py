@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'social.apps.django_app.default',
     'haystack',
     'gputils',
+    'cities',
+    'cities_light',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -92,7 +94,7 @@ WSGI_APPLICATION = 'gamepartners.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': "mydb",
 	'USER': "grigoriy",
 	'PASSWORD': 'Gregornet123',
@@ -162,6 +164,11 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, "locale"),
 )
 
+GEOIP_PATH = os.path.join(BASE_DIR, "geo_data")
+
+CITIES_LOCALES = ['en', 'ru',]
+
+CITIES_IGNORE_EMPTY_REGIONS = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/

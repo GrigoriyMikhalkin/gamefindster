@@ -4,6 +4,7 @@ from stdimage.models import StdImageField
 from stdimage.utils import UploadToUUID
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+from cities.models import City
     
 class Game(models.Model):
     name = models.CharField(max_length=512)
@@ -34,10 +35,25 @@ class Game(models.Model):
         return self.name
 
     
+class Platform(models.Model):
+    name = models.CharField(max_length=512)
+    logo = StdImageField(upload_to=UploadToUUID(path="platforms/logo/"),\
+                          variations={'thumbnail': {'width':25,'height':25},
+                                  })
+    
+    def __unicode__(self):
+        return self.name
+    
+    def __str__(self):
+        return self.name
+
+    
 class Event(models.Model):
     game = models.ForeignKey(Game)
     name = models.CharField(max_length=512)
     owner = models.ForeignKey(User,default=None,null=True)
+    platform = models.ForeignKey(Platform,null=True)
+    location = models.ForeignKey(City,null=True)
     description = models.TextField()
     participant_number = models.PositiveSmallIntegerField(default=2)
     is_full = models.BooleanField(default=False)
@@ -62,19 +78,6 @@ class Event(models.Model):
         ordering = ["-created"]
         verbose_name = _('event')
         verbose_name_plural = _('events')
-
-
-class Platform(models.Model):
-    name = models.CharField(max_length=512)
-    logo = StdImageField(upload_to=UploadToUUID(path="platforms/logo/"),\
-                          variations={'thumbnail': {'width':25,'height':25},
-                                  })
-    
-    def __unicode__(self):
-        return self.name
-    
-    def __str__(self):
-        return self.name
     
     
 class GamePlatform(models.Model):

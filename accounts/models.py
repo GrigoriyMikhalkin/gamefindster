@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from stdimage.models import StdImageField
 from stdimage.utils import UploadToUUID
 from base.models import Platform, Event
+#from django.utils.translation import ugettext_noop as _
+from cities.models import City
+
 
 # Create your models here.
 class UserPic(models.Model):
@@ -20,7 +23,9 @@ class UserInfo(models.Model):
     full_name = models.CharField(max_length=128,default="")
     birthdate = models.DateField(null=True)
     sex = models.NullBooleanField(null=True) # M -- True, F -- False
-    residence = models.CharField(max_length=128,default="")
+
+    city = models.ForeignKey(City,null=True)
+    
     status_message = models.CharField(max_length=128,default="")
     steamid = models.CharField(max_length=128,null=True)
     currentpic = models.OneToOneField(UserPic,on_delete=models.SET_NULL,null=True)
@@ -39,7 +44,7 @@ class UserSettings(models.Model):
 
 class UserSearchSettings(models.Model):
     user = models.OneToOneField(User,related_name="search_settings")
-    location = models.BooleanField(default=False)
+    location = models.CharField(max_length=32,default="300")
     time = models.BooleanField(default=False)
     language = models.BooleanField(default=False)
 
@@ -64,13 +69,9 @@ class Language(models.Model):
 class LanguageToUser(models.Model):
     user = models.ForeignKey(User,related_name="languages",null=True)
     language = models.ForeignKey(Language,related_name="users",null=True)
+    search = models.BooleanField(default=False)
 
 
 class LanguageToEvent(models.Model):
     event = models.ForeignKey(Event,related_name="languages",null=True)
     language = models.ForeignKey(Language,related_name="events",null=True)
-
-
-class LanguageSearchSettings(models.Model):
-    user = models.ForeignKey(User,related_name="search_languages",null=True)
-    language = models.ForeignKey(Language,null=True)
