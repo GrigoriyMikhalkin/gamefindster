@@ -47,12 +47,12 @@
 <hr>
 
 <div class="row">
-  <div class="col-md-1">
+  <div class="col-md-0">
   </div>
-  <div class="col-md-3">
-    <h3 style="margin-top:1%">{% trans "you looking for events in " %}</h3>
+  <div class="col-md-4" style="margin-top:0.4%;">
+    <h3 style="margin-top:1%;margin-left:15%;font-family:helvetica">{% trans "You're looking for events in " %}</h3>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4" style="margin-top:1%;">
     <form id="loc-form" method="POST">{% csrf_token %}
       <input name="location" id="loc-change" type="text" style="width:250px;" data-slider-step="100" data-slider-value="{{ location_value }}"/>
     </form>
@@ -142,7 +142,17 @@
 	<form method='POST' id="filter-params-form">{% csrf_token %}
 	  <p><b>{% trans "Apply time period filter" %}: </b><input type="checkbox" name="time-filter"/></p>
 	  <p><b>{% trans "Apply game platform filter" %}: </b><input type="checkbox" name="platform-filter" id="platform-filter" value="on" {% if request.user.search_settings.language %} checked {% endif %}/></p>
+	  <div id='choose-platform-div' style='border:2px solid #ccc; width:300px; height: 100px; overflow-y: scroll;'>
+	    {% for platform in request.user.userplatform_set.all %}
+	    <input type='checkbox' name='chk_platforms[]' value='{{ platform.platform }}' {% if platform.search %} checked {% endif %}/>{{platform.platform}} <br/>
+	    {% endfor %}
+	  </div>
 	  <p><b>{% trans "Apply language filter" %}: </b><input type="checkbox" name="lang-filter" id="lang-filter" value="on" {% if request.user.search_settings.language %} checked {% endif %}/></p>
+	  <div id='choose-lang-div' style='border:2px solid #ccc; width:300px; height: 100px; overflow-y: scroll;'>
+	    {% for lang in request.user.languages.all %}
+	    <input type='checkbox' name='chk_languages[]' value='{{ lang.language }}' {% if lang.search %} checked {% endif %}/>{{lang.language}} <br/>
+	    {% endfor %}
+	  </div>
 	  <input type='submit' value={% trans "Apply" %} />
 	</form>
       </div>
@@ -158,48 +168,41 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/6.1.5/bootstrap-slider.min.js"></script>
 <script type="text/javascript">
 
-  // Location filter
-
-  function addLocationSlider(){
-          var element = "";
-          $(element).insertAfter("#loc-filter");  
+  // Platform filter
+  if ($("#platform-filter").is("checked")) {
+  }
+  else {
+     $("#choose-platform-div").find(":input").prop("disabled",true);
   }
   
-  if ($("#loc-filter").is(":checked")) {
-      addLocationSlider();
-  }
-  
-  $("#loc-filter").click(function(){
-      if ($(this).is(":checked")) {
-          addLocationSlider();
+  $("#platform-filter").click(function(){
+     if ($(this).is(":checked")) {
+          $("#choose-platform-div").find(":input").prop("disabled",false);
       }
   
-      else {
-          $("#choose-range-div").hide();
-          var element = "<input type='hidden' name='location-off' value='off'>"; 
-          $(element).insertAfter("#loc-filter");  
+     else {
+          $("#choose-platform-div").find(":input").prop("disabled",true);
+          var element = "<input type='hidden' name='platform-off' value='off'>"; 
+          $(element).insertAfter("#platform-filter");  
       }
   
   });
   
   // Language filter
 
-  function addLangCheckboxes(){
-          var element = "<div id='choose-lang-div' style='border:2px solid #ccc; width:300px; height: 100px; overflow-y: scroll;'>{% for lang in request.user.languages.all %} <input type='checkbox' name='chk_languages[]' value='{{ lang.language }}' {% if lang.search %} checked {% endif %}/>{{lang.language}} <br/> {% endfor %}</div>";
-          $(element).insertAfter("#lang-filter");  
+  if ($("#lang-filter").is("checked")) {
   }
-  
-  if ($("#lang-filter").is(":checked")) {
-      addLangCheckboxes();
+  else {
+     $("#choose-lang-div").find(":input").prop("disabled",true);
   }
   
   $("#lang-filter").click(function(){
-      if ($(this).is(":checked")) {
-          addLangCheckboxes();
+     if ($(this).is(":checked")) {
+          $("#choose-lang-div").find(":input").prop("disabled",false);
       }
   
-      else {
-          $("#choose-lang-div").hide();
+     else {
+          $("#choose-lang-div").find(":input").prop("disabled",true);
           var element = "<input type='hidden' name='language-off' value='off'>"; 
           $(element).insertAfter("#lang-filter");  
       }

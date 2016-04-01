@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-26 08:41+0000\n"
+"POT-Creation-Date: 2016-03-31 18:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,27 +20,164 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-msgid "Home"
-msgstr "Главная"
+#: accounts/templates/accounts/login.html:10
+msgid "Username"
+msgstr "Имя пользователя"
 
-msgid "MOBA by Valve"
-msgstr "МОБА от Валв"
+#: accounts/templates/accounts/login.html:14
+msgid "Password"
+msgstr "Пароль"
 
-#: accounts/templates/accounts/settings.html:11
-msgid "Time zone"
-msgstr ""
+#: accounts/templates/accounts/login.html:17
+#: accounts/templates/registration/login.html:10
+msgid "Login"
+msgstr "Войти"
+
+#: accounts/templates/accounts/login.html:26
+#: accounts/templates/registration/login.html:19
+#: accounts/templates/registration/register.html:19
+msgid "Yandex"
+msgstr "Яндекс"
 
 #: accounts/templates/accounts/settings.html:17
-msgid "Set"
+msgid "Time zone"
+msgstr "Часовой пояс"
+
+#: accounts/templates/accounts/settings.html:23
+msgid "*will be set automatically according to your location"
+msgstr "*будет установлен автоматически, соответсвенно вашему местоположению."
+
+#: accounts/templates/accounts/settings.html:31
+msgid "Set location"
+msgstr "Установить местоположение"
+
+#: accounts/templates/registration/activate.html:7
+msgid "Key {{ activation_key }} is invalid"
+msgstr ""
+
+#: accounts/templates/registration/activation_complete.html:7
+msgid "Congratulations!!! Your acount is activated. Now you can login."
+msgstr "Поздравляем!!! Ваш аккаунт активирован. Теперь вы можете войти на сайт."
+
+#: accounts/templates/registration/login.html:14
+#: accounts/templates/registration/register.html:14
+#: accounts/templates/registration/registration_form.html:14
+msgid "Or login with your existing account in one of the following services"
+msgstr "Или войдите с помощью вашего аккаунта в одном из следующих сервисах"
+
+#: accounts/templates/registration/register.html:10
+#: accounts/templates/registration/registration_form.html:10
+msgid "Register"
+msgstr "Зарегистрироваться"
+
+#: accounts/templates/registration/register_success.html:7
+msgid "Success"
+msgstr ""
+
+#: accounts/templates/registration/registration_complete.html:7
+msgid "Registration is almost complete!!!"
+msgstr "Регистрация почти завершена!!!"
+
+#: accounts/templates/registration/registration_complete.html:8
+msgid ""
+"Please see your email for further instructions to activate your account!!!"
+msgstr "Пожалуйста, проверьте e-mail, для завершения регистрации."
+
+#: base/forms.py:12
+msgid ""
+"Select supported languages.(If not selected then your profile languages are "
+"set by default)"
+msgstr "Выберите поддерживаемые языки.(Если не выбраны, то, по умолчанию, установлены языки вашего профиля)"
+
+#: base/forms.py:18
+msgid "name"
+msgstr "название"
+
+#: base/forms.py:19
+msgid "description"
+msgstr "описание"
+
+#: base/forms.py:20
+msgid "participant_number"
+msgstr "количество участников"
+
+#: base/forms.py:21
+msgid "languages"
+msgstr "языки"
+
+#: base/forms.py:22
+#, fuzzy
+#| msgid "Start time"
+msgid "start_time"
+msgstr "Время начала"
+
+#: base/forms.py:23
+#, fuzzy
+#| msgid "Active before"
+msgid "before"
+msgstr "Активен до"
+
+#: base/models.py:61
+#, fuzzy
+#| msgid "Start time"
+msgid "start time"
+msgstr "Время начала"
+
+#: base/models.py:62
+msgid "date started"
 msgstr ""
 
 #: base/models.py:63
+#, fuzzy
+#| msgid "Active before"
+msgid "active before"
+msgstr "Активен до"
+
+#: base/models.py:79
 msgid "event"
 msgstr "ивент"
 
-#: base/models.py:64
+#: base/models.py:80
 msgid "events"
 msgstr "ивенты"
+
+#: base/templates/base.html:29
+msgid "Search games..."
+msgstr "Искать игры"
+
+#: base/templates/base.html:48
+msgid "login"
+msgstr "войти"
+
+#: base/templates/base.html:49
+msgid "register"
+msgstr "зарегистрироваться"
+
+#: base/templates/base.html:68
+msgid "Home"
+msgstr "Главная"
+
+#: base/templates/base.html:69 my_social/templates/my_social/userpage.html:105
+#, fuzzy
+#| msgid "events"
+msgid "Events"
+msgstr "Ивенты"
+
+#: base/templates/base.html:70
+msgid "Messages"
+msgstr "Сообщения"
+
+#: base/templates/base.html:71
+msgid "Notifications"
+msgstr "Уведомления"
+
+#: base/templates/base.html:72
+msgid "Contacts"
+msgstr "Контакты"
+
+#: base/templates/base.html:73
+msgid "Settings"
+msgstr "Настройки"
 
 #: base/templates/base/event_detail.html:23
 msgid "Broadcast message"
@@ -60,16 +197,19 @@ msgstr "Присоединиться"
 
 #: base/templates/base/event_detail.html:35
 #: my_social/templates/my_social/events.html:20
+#: my_social/templates/my_social/userpage.html:118
 msgid "Host"
 msgstr "Организатор"
 
 #: base/templates/base/event_detail.html:36
+#: base/templates/base/game_detail.html:89
 #: my_social/templates/my_social/events.html:25
 #: my_social/templates/my_social/notifications.html:34
 msgid "Start time"
 msgstr "Время начала"
 
 #: base/templates/base/event_detail.html:37
+#: base/templates/base/game_detail.html:91
 msgid "Platform"
 msgstr "Платформа"
 
@@ -81,11 +221,71 @@ msgstr "Создано"
 msgid "Active before"
 msgstr "Активен до"
 
-#: base/templates/base/game_detail.html:16
+#: base/templates/base/game_detail.html:32
+#: my_social/templates/my_social/userpage.html:46
 #, fuzzy
 #| msgid "Platform"
 msgid "Platforms"
 msgstr "Платформа"
+
+#: base/templates/base/game_detail.html:53
+msgid "You're looking for events in "
+msgstr "Отображать ивенты в "
+
+#: base/templates/base/game_detail.html:63
+msgid "Filter parameters"
+msgstr "Параметры фильтрации"
+
+#: base/templates/base/game_detail.html:70
+#, fuzzy
+#| msgid "Cancel event"
+msgid "Create new event"
+msgstr "Закрыть ивент"
+
+#: base/templates/base/game_detail.html:90
+#: my_social/templates/my_social/notifications.html:35
+msgid "Full"
+msgstr "Заполнен"
+
+#: base/templates/base/game_detail.html:92
+msgid "Location"
+msgstr "Местоположение"
+
+#: base/templates/base/game_detail.html:93
+#: my_social/templates/my_social/userpage.html:45
+msgid "Languages"
+msgstr "Языки"
+
+#: base/templates/base/game_detail.html:96
+msgid "Description"
+msgstr "Описание"
+
+#: base/templates/base/game_detail.html:131
+#: base/templates/base/post_form.html:5 base/templates/base/post_form.html:9
+#, fuzzy
+#| msgid "Leave event"
+msgid "Create event"
+msgstr "Покинуть ивент"
+
+#: base/templates/base/game_detail.html:143
+msgid "Apply time period filter"
+msgstr "Фильтровать временной период"
+
+#: base/templates/base/game_detail.html:144
+msgid "Apply game platform filter"
+msgstr "Фильтровать игровые платформы"
+
+#: base/templates/base/game_detail.html:145
+msgid "Apply language filter"
+msgstr "Фильтровать языки"
+
+#: base/templates/base/game_detail.html:146
+msgid "Apply"
+msgstr "Применить"
+
+#: base/templates/base/games_index_page.html:15
+msgid "events is active"
+msgstr "ивентов активно"
 
 #: my_social/Messaging/NotificationSender.py:116
 #, python-format
@@ -158,16 +358,94 @@ msgid "%(username)s refused to be member of group '%(groupname)s'"
 msgstr "%(username)s отказался быть участником группы '%(groupname)s'"
 
 #: my_social/templates/my_social/events.html:22
+#: my_social/templates/my_social/userpage.html:120
 msgid "Participant"
-msgstr ""
-
-#: my_social/templates/my_social/notifications.html:35
-msgid "Full"
-msgstr ""
+msgstr "Участник"
 
 #: my_social/templates/my_social/notifications.html:39
+#: my_social/templates/my_social/userpage.html:156
+#: my_social/templates/my_social/userpage.html:178
 msgid "Message"
-msgstr ""
+msgstr "Сообщение"
+
+#: my_social/templates/my_social/userpage.html:18
+msgid "set new profile image"
+msgstr "загрузить новое изображение"
+
+#: my_social/templates/my_social/userpage.html:27
+#: my_social/templates/my_social/userpage.html:144
+#, fuzzy
+#| msgid "Broadcast message"
+msgid "Send message"
+msgstr "Групповое сообщение"
+
+#: my_social/templates/my_social/userpage.html:28
+msgid "Add to friends"
+msgstr "Добавить в друзья"
+
+#: my_social/templates/my_social/userpage.html:29
+#, fuzzy
+#| msgid "Invitation to join event"
+msgid "Invite to event"
+msgstr "Приглашение присоединиться к ивенту"
+
+#: my_social/templates/my_social/userpage.html:30
+msgid "Invite to group"
+msgstr "Пригласить в группу"
+
+#: my_social/templates/my_social/userpage.html:42
+msgid "Sex"
+msgstr "Пол"
+
+#: my_social/templates/my_social/userpage.html:43
+msgid "Current location"
+msgstr "Нынешнее местоположение"
+
+#: my_social/templates/my_social/userpage.html:44
+msgid "Birthday"
+msgstr "День рождения"
+
+#: my_social/templates/my_social/userpage.html:53
+msgid "set at least one language for better search results"
+msgstr "установите хотя бы один язык для оптимизации результатов поиска"
+
+#: my_social/templates/my_social/userpage.html:72
+msgid "friends"
+msgstr "друзья"
+
+#: my_social/templates/my_social/userpage.html:87
+msgid "groups"
+msgstr "группы"
+
+#: my_social/templates/my_social/userpage.html:159
+#, fuzzy
+#| msgid "Cancel event"
+msgid "Choose event"
+msgstr "Закрыть ивент"
+
+#: my_social/templates/my_social/userpage.html:166
+#: my_social/templates/my_social/userpage.html:188
+msgid "Send invite"
+msgstr "Выслать приглашение"
+
+#: my_social/templates/my_social/userpage.html:181
+msgid "Choose group"
+msgstr "Выбрать группу"
+
+#: my_social/templates/my_social/userpage.html:227
+msgid "Save"
+msgstr "Сохранить"
+
+#: my_social/templates/my_social/userpage.html:248
+msgid "Select"
+msgstr "Выбрать"
+
+#: my_social/templates/my_social/userpage.html:250
+msgid "Delete"
+msgstr "Удалить"
+
+#~ msgid "MOBA by Valve"
+#~ msgstr "МОБА от Валв"
 
 #, fuzzy
 #~| msgid "%(username)s wants to join your event %(eventname)s"

@@ -58,9 +58,9 @@ class Event(models.Model):
     participant_number = models.PositiveSmallIntegerField(default=2)
     is_full = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    start_time = models.DateTimeField(verbose_name="start time")
-    created = models.DateTimeField(auto_now_add=True,verbose_name='date started')
-    before = models.DateTimeField(verbose_name='active before')
+    start_time = models.DateTimeField(verbose_name=_("start time"))
+    created = models.DateTimeField(auto_now_add=True,verbose_name=_("date started"))
+    before = models.DateTimeField(verbose_name=_("active before"))
 
     def isActive(self):
         """

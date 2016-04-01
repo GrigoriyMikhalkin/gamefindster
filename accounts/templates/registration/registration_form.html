@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 
 {% load static from staticfiles %}
+{% load i18n %}
 
 {% block content %}
 
 <form action="/accounts/register/" method="POST" style="margin-top:1%">{% csrf_token %}
   {{ form.as_p }}
-  <input type="submit" value="Register">
+  <input type="submit" value={% trans "Register" %}>
 </form>
 
   <h4>
-    Or login with your existing account in one of the following services:
+    {% trans "Or login with your existing account in one of the following services" %}:
   </h4>
   <a href="{% url 'social:begin' 'facebook' %}"><img src="{% static 'images/FaceBook_32x32.png' %}" alt="Facebook" /></a>
   <a href="{% url 'social:begin' 'twitter' %}"><img src="{% static 'images/Twitter_32x32.png' %}" alt="Twitter" /></a>

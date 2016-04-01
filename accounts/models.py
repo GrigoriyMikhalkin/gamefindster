@@ -55,6 +55,7 @@ class UserSearchSettings(models.Model):
 class UserPlatform(models.Model):
     user = models.ForeignKey(User)
     platform = models.ForeignKey(Platform)
+    search = models.BooleanField(default=False)
 
     
 class Language(models.Model):

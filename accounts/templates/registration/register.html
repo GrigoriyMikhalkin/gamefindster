@@ -4,7 +4,6 @@
 {% load i18n %}
 
 {% block content %}
-<p>ff</p>
 
 <form action="/accounts/register/" method="POST">{% csrf_token %}
   {{ form.as_p }}

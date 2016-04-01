@@ -40,8 +40,8 @@
     </div>
     <div class="col-md-6" style="color:#0087BD">
       <a href="/social/user/{{ event.owner.id }}"><p>{{ event.owner }}</p></a>
-      <p>None</p>
-      <p>None</p>
+      <p>{{ event.start_time }}</p>
+      <p><img src="{{ event.platform.logo.thumbnail.url }}" class="img-responsive" alt="{{ event.platform.name }}"/>None</p>
       <p>{{ event.created }}</p>
       <p>{{ event.before }}</p>
     </div>

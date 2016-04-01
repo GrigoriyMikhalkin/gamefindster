@@ -12,6 +12,12 @@
 
 {% block content %}
 
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#">{% trans "General" %}</a></li>
+  <li><a href="/accounts/settings/{{ request.user.id }}">{% trans "Platforms" %}</a></li>
+    <li><a href="/accounts/settings/{{ request.user.id }}">{% trans "Location" %}</a></li>
+</ul>
+
 {% get_current_timezone as TIME_ZONE %}
 <form method="POST" style="margin-top:2%">{% csrf_token %}
   <label for="timezone">{% trans "Time zone" %}:</label>

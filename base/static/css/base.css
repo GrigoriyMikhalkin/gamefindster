@@ -22,22 +22,24 @@ body {
 
 #username{
     font-size: large;
-    color: white;
+    color: #0087BD;
     margin-left: 10%;
 }
 
 hr{
-    background:red;
+    border-color:black;
 }
 
 #sidebar{
     z-index: 1;
     position: fixed;
-    width: 250px;
+    width: 280px;
     height: 400px;
     overflow-y: hidden;
-    background: #3c3a41;
+    background: white;
+    border: solid 1px;
     border-radius: 0px 0px 20px 0px;
+    box-shadow: 3px 3px 15px 3px #888888;
 }
 
 #wrapper.menuDisplayed #sidebar{
@@ -59,18 +61,22 @@ hr{
 }
 
 .sidebar-nav li{
-    text-indent: 20px;
-    line-height: 40px;
+    font-family: times;
+    margin-bottom: -10%;
 }
 
 .sidebar-nav li a{
     display: block;
     font-size: x-large;
     text-decoration: none;
-    color: #ddd;
+    color: black;
 }
 
 .sidebar-nav li a:hover{
-    height:30px;
+    background: #DCDCDC;
+}
+
+.sidebar-nav .selected{
+    background: #DA2C43;
 }
 
