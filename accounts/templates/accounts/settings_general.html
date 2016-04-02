@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#">{% trans "General" %}</a></li>
+  <li><a href="/accounts/settings/location/{{ request.user.id }}">{% trans "Location" %}</a></li>
+</ul>
+
+<form method="POST" style="margin-top:2%">{% csrf_token %}
+  <label for="chk_platforms[]">{% trans "Select platforms that you own" %}:</label>
+  <div id="choose-platform-div" style='border:2px solid #ccc; width:300px; height: 100px; overflow-y: scroll;'>
+    {% for platform in platforms %}
+    <input type="checkbox" name="chk_platforms[]" value="{{ platform }}" {% if platform.name in user_platforms %} checked {% endif %}/>{{platform}} <br/>
+    {% endfor %}
+  </div>
+  <input type="submit" class="btn btn-primary btn-sm" value={% trans "Apply" %} style="margin-top:2%">
+</form>
+{% endblock content %}

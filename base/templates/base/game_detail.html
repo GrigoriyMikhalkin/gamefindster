@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
+{% load static from staticfiles %}
 {% load i18n %}
 
 {% block css %}
 {{ block.super }}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/6.1.5/css/bootstrap-slider.min.css">
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.datetimepicker.css' %}"/ >
 <style>
   #loc-slider .slider-track-high {
 	background: red;
@@ -88,9 +90,16 @@
 	    <h3><a href="/event/{{ event.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>{{ event.name }}</h3>
 	    <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ event.start_time }}<p>
 	    <p><t style="color:#0087BD">{% trans "Full" %}:</t> {{ event.participation_set.count }}/{{ event.participant_number }}</p>
-	    <p><t style="color:#0087BD">{% trans "Platform" %}:</t> {{ event.platform }}</p>
 	    <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ event.location.country }}, {{ event.location }}</p>
 	    <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for lang in event.languages.all %} {% trans lang.language.name %}, {% endfor %}</p>
+	    <div class="row">
+	      <div class="col-md-3">
+		<t style="color:#0087BD">{% trans "Platform" %}:</t>
+	      </div>
+	      <div class="col-md-2">
+		<img src="{{ event.platform.logo.thumbnail.url }}" class="img-responsive" alt="{{ event.platform.name }}"/>
+	      </div>
+	    </div>
 	  </div>
 	  <div class="col-md-6" style="margin-top:-1%">
 	    <h3>{% trans "Description" %}:</h3>
@@ -126,7 +135,6 @@
     <div class="modal-content">
       <div class="modal-header">
 	<form method='POST'>{% csrf_token %}
-	  {{ form.media }}
 	  {{ form.as_p }}
 	  <input type='submit' value={% trans "Create event" %} />
 	</form>
@@ -140,10 +148,15 @@
     <div class="modal-content">
       <div class="modal-header">
 	<form method='POST' id="filter-params-form">{% csrf_token %}
-	  <p><b>{% trans "Apply time period filter" %}: </b><input type="checkbox" name="time-filter"/></p>
-	  <p><b>{% trans "Apply game platform filter" %}: </b><input type="checkbox" name="platform-filter" id="platform-filter" value="on" {% if request.user.search_settings.language %} checked {% endif %}/></p>
+	  <p><b>{% trans "Apply time period filter" %}: </b><input id="time-filter" type="checkbox" name="time-filter" value="on" {% if request.user.search_settings.time %} checked {% endif %}/></p>
+	  <div id="choose-period-div">
+	    <input id="period-start" type="text" name="period-start" value="{{ request.user.search_settings.get_beginning_date }}"></input>
+	    <t> {% trans "to" %} </t>
+	    <input id="period-end" type="text" name="period-end" value="{{ request.user.search_settings.get_ending_date }}"></input>
+	  </div>
+	  <p><b>{% trans "Apply game platform filter" %}: </b><input type="checkbox" name="platform-filter" id="platform-filter" value="on" {% if request.user.search_settings.platform %} checked {% endif %}/></p>
 	  <div id='choose-platform-div' style='border:2px solid #ccc; width:300px; height: 100px; overflow-y: scroll;'>
-	    {% for platform in request.user.userplatform_set.all %}
+	    {% for platform in request.user.platforms.all %}
 	    <input type='checkbox' name='chk_platforms[]' value='{{ platform.platform }}' {% if platform.search %} checked {% endif %}/>{{platform.platform}} <br/>
 	    {% endfor %}
 	  </div>
@@ -168,8 +181,28 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/6.1.5/bootstrap-slider.min.js"></script>
 <script type="text/javascript">
 
+  // Time period filter
+  if ($("#time-filter").is(":checked")) {
+  }
+  else {
+     $("#choose-period-div").find(":input").prop("disabled",true);
+  }
+  
+  $("#time-filter").click(function(){
+     if ($(this).is(":checked")) {
+          $("#choose-period-div").find(":input").prop("disabled",false);
+      }
+  
+     else {
+          $("#choose-period-div").find(":input").prop("disabled",true);
+          var element = "<input type='hidden' name='period-off' value='off'>"; 
+          $(element).insertAfter("#time-filter");  
+      }
+  
+  });
+  
   // Platform filter
-  if ($("#platform-filter").is("checked")) {
+  if ($("#platform-filter").is(":checked")) {
   }
   else {
      $("#choose-platform-div").find(":input").prop("disabled",true);
@@ -190,7 +223,7 @@
   
   // Language filter
 
-  if ($("#lang-filter").is("checked")) {
+  if ($("#lang-filter").is(":checked")) {
   }
   else {
      $("#choose-lang-div").find(":input").prop("disabled",true);
@@ -220,6 +253,36 @@
 
   $("#loc-change").on("change",function(){
       $("#loc-form").submit();
+  });
+</script>
+
+<script src="{% static 'js/jquery.datetimepicker.full.min.js' %}"></script>
+
+<script type="text/javascript">
+  jQuery.datetimepicker.setLocale("ru");
+  
+  $("#id_start_time").datetimepicker({
+      onChangeDateTime: function(dp,$input){
+          $("#id_before").val($input.val());
+          $("#id_before").show();
+      },
+      step: 15,
+      format: "Y-m-d H:i"
+  });
+
+  $("#id_before").datetimepicker({
+      step: 15,
+      format: "Y-m-d H:i"
+  });
+
+  $("#period-start").datetimepicker({
+      step: 15,
+      format: "Y-m-d H:i"
+  });
+
+  $("#period-end").datetimepicker({
+      step: 15,
+      format: "Y-m-d H:i"
   });
 </script>
 

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from stdimage.models import StdImageField
 from stdimage.utils import UploadToUUID
 from base.models import Platform, Event
-#from django.utils.translation import ugettext_noop as _
+from django.utils.translation import ugettext_noop as _
 from cities.models import City
 
 
@@ -47,13 +47,19 @@ class UserSearchSettings(models.Model):
     location = models.CharField(max_length=32,default="300")
     time = models.BooleanField(default=False)
     language = models.BooleanField(default=False)
+    platform = models.BooleanField(default=False)
 
     beginning = models.DateTimeField(verbose_name="beginning",null=True)
     ending = models.DateTimeField(verbose_name="ending",null=True)
-    
+
+    def get_beginning_date(self):
+        return self.beginning.strftime("%Y-%m-%d %H:%M")
+
+    def get_ending_date(self):
+        return self.ending.strftime("%Y-%m-%d %H:%M")
 
 class UserPlatform(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User,related_name="platforms")
     platform = models.ForeignKey(Platform)
     search = models.BooleanField(default=False)
 

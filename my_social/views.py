@@ -26,8 +26,12 @@ def user_page(request,id):
     m_events = request.user.event_set.filter(is_active=True)
     m_groups = request.user.group_set.all()
     city = user.info.city
-    country = city.country
-    location = country.name + ", " + city.name
+
+    try:
+        country = city.country
+        location = country.name + ", " + city.name
+    except AttributeError:
+        location = ""
     
     if request.user != user: 
         form = MessageForm(request.POST or None)
@@ -163,7 +167,7 @@ def contacts(request):
     
     objects = Friend.objects.filter(user_id=user.id)
     
-    return info_template(request,objects=objects, pagination_size=50, section="contacts1")
+    return info_template(request,objects=objects, pagination_size=50, section="contacts1", template="my_social/friends.html")
 
 @login_required(login_url="/accounts/login/")
 def contacts_g(request):
@@ -181,7 +185,7 @@ def contacts_g(request):
         return HttpResponseRedirect("/social/contacts_g/")
     
     return info_template(request,objects=objects, pagination_size=50, section="contacts2",\
-                         form=form)
+                         form=form, template="my_social/groups.html")
 
 
 def request_notification(user,receiver,request_object,request_sender):

@@ -113,9 +113,9 @@ class EventRequestSender(ActionNotificationSender):
     def __init__(self,user,event,receiver=None):
         super().__init__(user,receiver)
 
-        self.label = _("%(username)s wants to join your event %(eventname)s") %  {"username":self.user.username, "eventname":event.name}
-        self.accept_label = _("You're accepted to participate in event '%(eventname)s'") % {"eventname":event.name}
-        self.reject_label = _("You're refused to participate in event '%(eventname)s'") % {"eventname":event.name}
+        self.label = _("Request to join event")
+        self.accept_label = _("You're accepted to participate in event")
+        self.reject_label = _("You're refused to participate in event")
         self.notification_type = "event_application"
         self.request_object = event
         self.model_object = EventApplication
@@ -255,8 +255,8 @@ class EventInviteSender(ActionNotificationSender):
         super().__init__(user,receiver)
         
         self.label = _("Invitation to join event") 
-        self.accept_label = _("%(username)s now participate in event '%(eventname)s'") % {"username":self.user.username,"eventname":event.name}
-        self.reject_label = _("%(username)s refused to participate in event '%(eventname)s'") % {"username":self.user.username,"eventname":event.name}
+        self.accept_label = _("Invitation to event was accepted")
+        self.reject_label = _("Invitation to event was rejected")
         self.notification_type = "event_invitation"
         self.request_object = event
         self.model_object = EventApplication

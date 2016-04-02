@@ -13,9 +13,8 @@
 {% block content %}
 
 <ul class="nav nav-tabs">
-  <li class="active"><a href="#">{% trans "General" %}</a></li>
-  <li><a href="/accounts/settings/{{ request.user.id }}">{% trans "Platforms" %}</a></li>
-    <li><a href="/accounts/settings/{{ request.user.id }}">{% trans "Location" %}</a></li>
+  <li><a href="/accounts/settings/general/{{ request.user.id }}">{% trans "General" %}</a></li>
+  <li class="active"><a href="#">{% trans "Location" %}</a></li>
 </ul>
 
 {% get_current_timezone as TIME_ZONE %}

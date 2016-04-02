@@ -11,9 +11,9 @@
       <div class="caption" style="margin-top:-1%">
 	<div class="row">
 	  <div class="col-md-11">
+	    {% if object.type == "event_application" %}
 
-	    {% if object.type == "event_application" or object.type == "event_invitation" %}
-	    <div class="row">
+	    <div class="row" style="margin-bottom:-2%">
 	      <div class="col-md-2" style="margin-top:1%">
 		<a href="/social/notification/accept/{{ object.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
 		<a href="/social/notification/reject/{{ object.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
@@ -25,16 +25,105 @@
 	    <hr>
 	    {% with object.request.event_application.request_class as event %}
 	    <div class="col-md-2">
-	      <a href="/game/{{ event.game.id }}">
-		<img src="{{ event.game.cover.thumbnail.url }}" class="img-responsive" alt="{{ event.game.name }}" style="margin-top:3%;border-radius:10px 0px 0px 10px;"/>
+	      <a href="/social/user/{{ object.sender }}">
+		<img src="{{ object.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ object.sender.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ object.sender }}</p></center>
 	      </a>
 	    </div>
-	    <div class="col-md-4" style="margin-top:-1%">
-	      <h4><a href="/event/{{ event.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>{{ event.name }}</h4>
+	    <div class="col-md-4" style="margin-top:-2%">
+	      <div class="row">
+		<div class="col-md-2" style="margin-top:2%">
+		  <a href="/event/{{ event.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-6">
+		  <h4>{{ event.name }}</h4>
+		</div>
+	      </div>
 	      <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ event.start_time }}<p>
 	      <p><t style="color:#0087BD">{% trans "Full" %}:</t> {{ event.participation_set.count }}/{{ event.participant_number }}</p>
 	    </div>
-	    <div class="col-md-6" style="margin-top:-1%">
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if object.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ object.text }}</p>
+	      {% endif %}
+	    </div>
+	    {% endwith %}
+	    
+	    {% elif object.type == "event_invitation" %}
+	    
+	    <div class="row" style="margin-bottom:-2%">
+	      <div class="col-md-2" style="margin-top:1%">
+		<a href="/social/notification/accept/{{ object.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+		<a href="/social/notification/reject/{{ object.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-10" style="margin-top:-1%">
+		  <h3 style="font-family:utopia">{% trans object.label %}</h3>
+		</div>
+	    </div>
+	    <hr>
+	    {% with object.request.event_application.request_class as event %}
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ event.owner.id }}">
+		<img src="{{ event.owner.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ event.owner.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ event.owner }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-2%">
+	      <div class="row">
+		<div class="col-md-2" style="margin-top:2%">
+		  <a href="/event/{{ event.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-6">
+		  <h4>{{ event.name }}</h4>
+		</div>
+	      </div>
+	      <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ event.start_time }}<p>
+		<div class="row">
+		  <div class="col-md-3">
+		    <t style="color:#0087BD">{% trans "Platform" %}:</t>
+		  </div>
+		  <div class="col-md-2">
+		    <img src="{{ event.platform.logo.thumbnail.url }}" class="img-responsive" alt="{{ event.platform.name }}"/>
+		  </div>
+		</div>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if object.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ object.text }}</p>
+	      {% endif %}
+	    </div>
+	    {% endwith %}
+
+	    {% elif object.type == "event" %}
+	    
+	    <div class="row" style="margin-bottom:-1%">
+	      <div class="col-md-12" style="margin-top:-1%">
+		<h3 style="font-family:utopia">{% trans object.label %}</h3>
+	      </div>
+	    </div>
+	    <hr>
+	    {% with object.event_notification.notification_subject as event %}
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ object.sender.id }}">
+		<img src="{{ object.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ object.sender.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ object.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-2%">
+	      <div class="row">
+		<div class="col-md-2" style="margin-top:2%">
+		  <a href="/event/{{ event.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-6">
+		  <h4>{{ event.name }}</h4>
+		</div>
+	      </div>
+	      <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ event.start_time }}<p>
+	      <p><t style="color:#0087BD">{% trans "Full" %}:</t> {{ event.participation_set.count }}/{{ event.participant_number }}</p>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
 	      {% if object.text != None %}
 	      <h4>{% trans "Message" %}:</h4>
 	      <p>{{ object.text }}</p>
@@ -50,11 +139,7 @@
 	    <a href="/social/notification/accept/{{ object.request.id }}" class="btn btn-primary btn-sm" role="button">Accept</a>
 	    <a href="/social/notification/reject/{{ object.request.id }}" class="btn btn-primary btn-sm" role="button">Reject</a>
 	    
-	    {% elif object.type == "event" %}
-	    <h4 style="color:#0087BD">{% trans object.label %}</h4>
-	    {% if object.text != None %}
-	    <p>{{ object.text }}</p>
-	    {% endif %}
+	   
 	    <a href="/event/{{ object.event_notification.notification_subject.id }}" class="btn btn-primary btn-sm" role="button">View event</a>
 	    {% elif object.type == "friend" %}
 	    <h4 style="color:#0087BD">{% trans object.label %}</h4>

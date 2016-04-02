@@ -58,7 +58,13 @@
 	  {% endfor %}
 	</p>
 	{% endif %}
-	<p>Platforms</p>
+	<div class="row">
+	  {% for platform in user.platforms.all %}
+	  <div class="col-md-2">
+	    <img src="{{ platform.platform.logo.thumbnail.url }}" class="img-responsive" alt="{{ platform.platform.name }}"/>
+	  </div>
+	  {% endfor %}
+	</div>
       </div>
     </div>
   </div>
@@ -69,9 +75,9 @@
 <div class="row">
   
   <div id="members" class="col-sm-3">
-    <h4 style="margin-top:-20px;color:white;background-color:#61768d;height:20px;text-align:center;">4 {% trans "friends" %}</h4>
+    <h4 style="margin-top:-20px;color:white;background-color:#61768d;height:20px;text-align:center;">{{ user.friends.count }} {% trans "friends" %}</h4>
     <div class="row">
-      {% for friendship in user.friends.all %}
+      {% for friendship in user.friends.all|slice:":4" %}
       <div class="col-sm-6">
 	  <div class="caption">
 	    {% if friendship.friend.info.currentpic == None %}
@@ -84,9 +90,9 @@
       </div>
       {% endfor %}
     </div>
-    <h4 style="color:white;background-color:#61768d;height:20px;text-align:center">2 {% trans "groups" %}</h4>
+    <h4 style="color:white;background-color:#61768d;height:20px;text-align:center">{{ user.groupparticipation_set.count }} {% trans "groups" %}</h4>
     <div class="row">
-      {% for participation in user.groupparticipation_set.all %}
+      {% for participation in user.groupparticipation_set.all|slice:":4" %}
       <div class="col-sm-6">
 	  <div class="caption">
 	    {% if participation.group.currentpic.currentpic == None %}

@@ -13,13 +13,18 @@ from django.template.response import TemplateResponse
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import resolve_url
 from django.utils.http import is_safe_url
-from .models import UserPic
-from django.contrib.auth.models import User
+
+# Import geo-stuff
 from ipware.ip import get_real_ip
 from django.contrib.gis.geoip2 import GeoIP2
-from cities.models import City, Country
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
+
+# Import models
+from .models import UserPic, UserPlatform
+from base.models import Platform
+from django.contrib.auth.models import User
+from cities.models import City, Country
 
 
 def is_owner(user,pic):
@@ -110,9 +115,32 @@ def pic_change(request,pid):
         
     return HttpResponseRedirect('/social/user/%d' % request.user.id)
 
-
 @login_required(login_url="/accounts/login/")
-def user_settings(request,uid):
+def user_general_settings(request,uid):
+    user = get_object_or_404(User,id=uid)
+
+    if user != request.user:
+        return HttpResponseRedirect('/')
+
+    selected_platforms = request.POST.getlist("chk_platforms[]")
+    for platform in selected_platforms:
+        platform = Platform.objects.get(name=platform)
+        up = UserPlatform.objects.get_or_create(user=user,platform=platform)
+        print(up)
+        
+    platforms = Platform.objects.all()
+    user_platforms = [ platform.platform.name for platform in user.platforms.all() ]
+    
+    context = {
+        "platforms": platforms,
+        "user_platforms": user_platforms,
+    }
+    
+    return render(request, "accounts/settings_general.html", context)
+    
+    
+@login_required(login_url="/accounts/login/")
+def user_location_settings(request,uid):
     user = get_object_or_404(User,id=uid)
 
     if user != request.user:
@@ -161,7 +189,7 @@ def user_settings(request,uid):
         "longitude": longitude,
         "latitude": latitude,
     }    
-    return render(request, "accounts/settings.html", context)
+    return render(request, "accounts/settings_location.html", context)
 
 
 def redirect_home(request):

@@ -18,6 +18,7 @@ class EventForm(forms.ModelForm):
             _("name"),
             _("description"),
             _("participant_number"),
+            _("platform"),
             _("languages"),
             _("start_time"),
             _("before"),
