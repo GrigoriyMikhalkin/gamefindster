@@ -95,7 +95,7 @@
       <div id="sidebar" class="collapseSidebar">
 	<div id="userinfo">
 	  {% if request.user.info.currentpic == None %}
-	  <img src="/media/games/covers/not_available.gif" class="img-circle">
+	  <img src="/media/games/covers/not_available.gif" class="img-circle" style="border: 1px solid;">
 	  {% else %}
 	  <img src="{{ request.user.info.currentpic.avatar.thumbnail.url }}" class="img-circle">
 	  {% endif %}
