@@ -24,9 +24,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'ks=-j#i-%^+qdtu7n_8v7#ch1c_4%h$a3wkdbncbiyt=_s$=w+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+	"localhost",
+	"188.166.19.65",
+]
 
 
 # Application definition
@@ -178,9 +181,10 @@ CITIES_IGNORE_EMPTY_REGIONS = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR),"static")
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR),"media_cdn")
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR),"media")
 
 # Search settings
 HAYSTACK_CONNECTIONS = {
