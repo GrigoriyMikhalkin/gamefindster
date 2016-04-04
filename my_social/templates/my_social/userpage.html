@@ -13,7 +13,6 @@
 	{% else %}
 	<a href="#gallery" data-toggle="modal"><img src="{{ user.info.currentpic.avatar.large.url }}" class="img-responsive" /></a>
 	{% endif %}
-	{% if request.user.is_authenticated %}
 	{% if request.user == user %}
 	<center><a href="#profilepic" data-toggle="modal">{% trans "set new profile image" %}</a></center>
 	{% endif %}
@@ -23,11 +22,14 @@
     <div class="col-md-9">
       <h2>{{ user.username }}</h2>
       <p>{{ user.info.status_message }}.</p>
+      {% if request.user.is_authenticated %}
       {% if request.user != user %}
       <a href="#message" class="btn btn-primary btn-sm" role="button" data-toggle="modal">{% trans "Send message" %}</a>
       <a href="/social/application/friend/{{ user.id }}" class="btn btn-primary btn-sm" role="button">{% trans "Add to friends" %}</a>
       <a href="#event-invite" class="btn btn-primary btn-sm" role="button" data-toggle="modal">{% trans "Invite to event" %}</a>
       <a href="#group-invite" class="btn btn-primary btn-sm" role="button" data-toggle="modal">{% trans "Invite to group" %}</a>
+      {% else %}
+      <a href="#broadcast" class="btn btn-primary btn-sm" role="button" data-toggle="modal">{% trans "Broadcast message" %}</a>
       {% endif %}
       {% endif %}
       <hr>
@@ -75,7 +77,7 @@
 <div class="row">
   
   <div id="members" class="col-sm-3">
-    <h4 style="margin-top:-20px;color:white;background-color:#61768d;height:20px;text-align:center;">{{ user.friends.count }} {% trans "friends" %}</h4>
+   <a href="/social/contacts/{{ user.id }}"><h4 style="margin-top:-20px;color:white;background-color:#61768d;height:20px;text-align:center;">{{ user.friends.count }} {% trans "friends" %}</h4></a>
     <div class="row">
       {% for friendship in user.friends.all|slice:":4" %}
       <div class="col-sm-6">
@@ -85,12 +87,13 @@
 	    {% else %}
 	    <img src="{{ friendship.friend.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" />
 	    {% endif %}
+	    <center>online</center>
 	    <center><a href="/social/user/{{ friendship.friend.id }}">{{ friendship.friend.username|truncatechars:12 }}</a></center>
 	  </div>
       </div>
       {% endfor %}
     </div>
-    <h4 style="color:white;background-color:#61768d;height:20px;text-align:center">{{ user.groupparticipation_set.count }} {% trans "groups" %}</h4>
+   <a href="/social/contacts_g/{{ user.id }}"><h4 style="color:white;background-color:#61768d;height:20px;text-align:center">{{ user.groupparticipation_set.count }} {% trans "groups" %}</h4></a>
     <div class="row">
       {% for participation in user.groupparticipation_set.all|slice:":4" %}
       <div class="col-sm-6">
@@ -108,8 +111,8 @@
   </div>
     
   <div id="group-events" class="col-sm-9">
-    <h3 style="margin-top:-20px;color:white;background-color:grey;height:30px;text-align:center">{% trans "Events" %}</h3>
-    {% for event in events %}
+    <a href="/social/events/{{ user.id }}"><h3 style="margin-top:-20px;color:white;background-color:grey;height:30px;text-align:center">{{ events.count }} {% trans "events" %}</h3></a>
+    {% for event in events|slice:":4" %}
     <div class="thumbnail" style="border-radius:20px;background:#DCDCDC">
 	<div class="row">
 	  <div class="col-md-2">
@@ -262,7 +265,28 @@
       </div>
     </div>
   </div>
-</div> 
+</div>
+
+<div class="modal fade" id="broadcast" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+	<form action="/social/broadcast/friends/" method='POST'>{% csrf_token %}
+	  <p>{% trans "Type message that you want to send to other participants of this event" %}:</p>
+	  <textarea id="broadcast-message" name="broadcast-text" rows="10" style="width:100%"></textarea>
+	  <label for="select-friends">{% trans "Choose to whom you want to send this message" %}: </label>
+	  <select id="select-friends" name="friend-filter">
+	    <option value="all" selected>All friends</option>
+	    <option value="online" >Friends online</option>
+	    <option value="offline" >Friends offline</option>
+	  </select>
+	  <p><input type='submit' value="{% trans 'Send' %}" /></p>
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endif %}
 
 {% block js %}

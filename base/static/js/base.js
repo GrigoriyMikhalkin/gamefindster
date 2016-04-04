@@ -18,3 +18,19 @@ $("#menu-toggle").click( function (e) {
     e.preventDefault();
     $("#wrapper").toggleClass("menuDisplayed");
 });
+
+
+var button = $('#login-button');
+var box = $('#loginBox');
+var form = $('#loginForm');
+
+button.mouseover(function(login) {
+    box.toggle();
+    button.toggleClass('active');
+});
+form.hover(function() { 
+    return false;
+}, function() {
+    button.removeClass('active');
+    box.hide();
+});

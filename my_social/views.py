@@ -1,15 +1,20 @@
+from datetime import datetime
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.auth.models import User
-from .models import *
 from .forms import *
-from base.models import Event
-from accounts.models import UserInfo
 from .Messaging.NotificationSender import *
 from django.db.models import Q, F, Max
 from django.contrib.auth.decorators import login_required
 from gputils.functions import get_object_or_none
+from endless_pagination.decorators import page_template
+
+# Import models
+from django.contrib.auth.models import User
+from .models import *
+from base.models import Event
+from accounts.models import UserInfo
+
 
 # Create your views here.
 NOTIFICATION_TYPES = {
@@ -23,9 +28,13 @@ NOTIFICATION_TYPES = {
 def user_page(request,id):
     user = get_object_or_404(User,id=id)
     events = user.participation_set.all()
-    m_events = request.user.event_set.filter(is_active=True)
-    m_groups = request.user.group_set.all()
     city = user.info.city
+    m_events = None
+    m_groups = None
+
+    if request.user.is_authenticated():
+        m_events = request.user.event_set.filter(is_active=True)
+        m_groups = request.user.group_set.all()
 
     try:
         country = city.country
@@ -73,6 +82,7 @@ def group_page(request,id):
 
     if request.user.is_authenticated():
         participant = get_object_or_none(GroupParticipation,group=group,participant=request.user)
+            
     else:
         participant = None
         
@@ -137,29 +147,53 @@ def info_template(request,objects,pagination_size,section,template="my_social/in
     
     return render(request,template,context)
 
-@login_required(login_url="/accounts/login/")
-def messages(request):
-    user = request.user
-    
-    objects = user.received.order_by("sender","-created").distinct("sender")
-    
-    return info_template(request,objects=objects, pagination_size=20, section="messages_l1")
 
 @login_required(login_url="/accounts/login/")
-def notifications(request):
+@page_template("my_social/conversations_page.html")
+def messages(request,template="my_social/infolist_template.html",extra_context=None):
     user = request.user
-    
-    objects = Notification.objects.filter(receiver=user)
-    
-    return info_template(request,objects=objects, pagination_size=20, section="notifications", template="my_social/notifications.html")
+    conversations = user.received.order_by("sender","-created").distinct("sender")
+
+    context = {
+        "conversations": conversations,
+    }
+    if extra_context is not None:
+        context.update(extra_context)
+
+    return render(request,template,context)
+
 
 @login_required(login_url="/accounts/login/")
-def events(request):
+@page_template("my_social/notifications_page.html")
+def notifications(request,template="my_social/infolist_template.html",extra_context=None):
     user = request.user
+    notifications = Notification.objects.filter(receiver=user)
+    context = {
+        "notifications": notifications,
+    }
+    if extra_context is not None:
+        context.update(extra_context)
     
-    objects = Participation.objects.filter(participant=user).order_by("-registration_date")
+    return render(request,template,context)
     
-    return info_template(request,objects=objects, pagination_size=20, section="events", template="my_social/events.html")
+
+
+@login_required(login_url="/accounts/login/")
+@page_template("my_social/events_page.html")
+def events(request, gid,template="my_social/infolist_template.html",extra_context=None):
+    user = User.objects.get(id=gid)
+    participations = Participation.objects.filter(participant=user).order_by("-event__start_time")
+    current_date = datetime.now()
+    
+    context = {
+        "participations": participations,
+        "current_date": current_date,
+    }
+    if extra_context is not None:
+        context.update(extra_context)
+    
+    return render(request,template,context)
+
 
 @login_required(login_url="/accounts/login/")
 def contacts(request):
@@ -180,7 +214,7 @@ def contacts_g(request):
         instance = form.save(commit=False)
         instance.owner = user
         instance.save()
-        GroupParticipation.objects.create(group=instance,participant=user)
+        GroupParticipation.objects.create(group=instance,participant=user,admin=True)
         GroupCurrentPic.objects.create(group=instance)
         return HttpResponseRedirect("/social/contacts_g/")
     
@@ -264,7 +298,8 @@ def delete_notification(request,nid):
     return HttpResponseRedirect('/social/notifications/')
 
 @login_required(login_url="/accounts/login/")
-def read_messages(request,uid):
+@page_template("my_social/messages_page.html")
+def read_messages(request,uid,template="my_social/infolist_template.html",extra_context=None):
     user = request.user
     request_user = User.objects.get(id=uid)
 
@@ -282,10 +317,18 @@ def read_messages(request,uid):
         return HttpResponseRedirect("/social/messages/%s" % uid)
     
     
-    objects = Message.objects.filter((Q(receiver=user) & Q(sender=request_user))
+    messages = Message.objects.filter((Q(receiver=user) & Q(sender=request_user))
                                      | (Q(receiver=request_user) & Q(sender=user)))
-    
-    return info_template(request,objects=objects, pagination_size=20, section="messages_l2",form=form)
+
+    context = {
+        "messages": messages,
+        "form": form,
+    }
+    if extra_context is not None:
+        context.update(extra_context)
+
+    return render(request,template,context)
+
 
 @login_required(login_url="/accounts/login/")
 def broadcast_event(request,eid):
@@ -299,11 +342,25 @@ def broadcast_event(request,eid):
 
 @login_required(login_url="/accounts/login/")
 def broadcast_group(request,gid):
-    pass
+    group = get_object_or_404(Group,id=gid)
+    text = request.POST.get("broadcast-text")
+    
+    broadcaster = GroupBroadcaster(request.user,group)
+    broadcaster.broadcast(text)
+
+    return HttpResponseRedirect("/social/group/%s" % gid)
+    
 
 @login_required(login_url="/accounts/login/")
 def broadcast_friends(request):
-    pass
+    user = request.user
+    text = request.POST.get("broadcast-text")
+    friend_filter = request.POST.get("friend-filter") 
+    
+    broadcaster = FriendBroadcaster(request.user)
+    broadcaster.broadcast(text,friend_filter)
+
+    return HttpResponseRedirect("/social/user/%s" % user.id)
 
 @login_required(login_url="/accounts/login/")
 def cancel_event(request,eid):

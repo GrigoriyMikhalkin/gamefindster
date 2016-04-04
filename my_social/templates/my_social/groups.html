@@ -5,24 +5,43 @@
 {% block content %}
 
 <ul class="nav nav-tabs">
-  <li class="active"><a href="#">{% trans "Friends" %}</a></li>
-  <li><a href="/social/contacts_g/">{% trans "Groups" %}</a></li>
+  <li><a href="/social/contacts/">{% trans "Friends" %}</a></li>
+  <li class="active"><a href="#">{% trans "Groups" %}</a></li>
 </ul>
 
-<div class="col-md-6" style="margin-top:1%">
+<a href="#create-group" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Create new group</a>
+
+<div class="col-md-6" style="margin-top:5%">
   {% for object in objects %}
   <div class="col-sm-3">
     <div class="caption">
-      {% if object.friend.info.currentpic == None %}
+      {% if object.group.currentpic.currentpic == None %}
       <img src="/media/user/pic/not_available.gif" class="img-responsive">
       {% else %}
-      <img src="{{ object.friend.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" />
+      <img src="{{ object.group.currentpic.currentpic.avatar.thumbnail.url }}" class="img-responsive" />
       {% endif %}
-      <center>online</center>
-      <center><a href="/social/user/{{ object.friend.id }}">{{ object.friend.username|truncatechars:12 }}</a></center>
+      <center><a href="/social/group/{{ object.group.id }}">{{ object.group.group_name|truncatechars:12 }}</a></center>
     </div>
   </div>
   {% endfor %}
 </div>
 
 {% endblock content %}
+
+{% block modals %}
+
+<div class="modal fade" id="create-group" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+	<form method='POST'>{% csrf_token %}
+	  {{ form.media }}
+	  {{ form.as_p }}
+	  <input type='submit' value='Create group' />
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock modals %}

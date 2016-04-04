@@ -1,10 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import User
-from base.models import Event
 from stdimage.models import StdImageField
 from stdimage.utils import UploadToUUID
 
-# Create your models here.
+# Import models
+from django.contrib.auth.models import User
+from base.models import Event
+from accounts.models import UserInfo
+
 
 class Friend(models.Model):
     user = models.ForeignKey(User,related_name="friends") # represents User's ID
@@ -80,7 +82,21 @@ class Message(models.Model):
     sender = models.ForeignKey(User, related_name="sended")
     text = models.TextField()
     created = models.DateTimeField(auto_now_add=True,verbose_name='date started')
+    read = models.BooleanField(default=False)
 
+    def is_read(self):
+        if self.read:
+            return True
+
+        self.read = True
+        user_info = UserInfo.objects.get(user=self.receiver)
+        user_info.unread_messages = models.F("unread_messages") - 1
+        user_info.save()
+        self.save()
+        
+        return False
+        
+    
     class Meta:
         ordering = ["-created"]
 
@@ -129,7 +145,7 @@ class FriendApplication(models.Model):
 
 import json
 import redis
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 
@@ -151,3 +167,35 @@ def new_message(sender, **kwargs):
             )
         )
     
+@receiver(post_save, sender=Notification)
+def new_notification(sender, **kwargs):
+    redis_client = redis.StrictRedis(host='localhost',port=6379,db=0)
+
+    notification = kwargs['instance']
+    receiver = notification.receiver
+
+    # Update unread notifications counter
+    user_info = UserInfo.objects.get(user=receiver)
+    user_info.unread_notifications = models.F("unread_notifications") + 1
+    user_info.save()
+    
+    unread_notifications = receiver.info.unread_notifications
+    for session in receiver.session_set.all():
+        redis_client.publish(
+            'notifications.%s' % session.session_key,
+            json.dumps(
+                {
+                    "unread_notifications": unread_notifications,
+                }
+            )
+        )
+        
+@receiver(post_delete, sender=Notification)
+def delete_notification(sender, **kwargs):
+    notification = kwargs['instance']
+    receiver = notification.receiver
+
+    # Update unread notifications counter
+    user_info = UserInfo.objects.get(user=receiver)
+    user_info.unread_notifications = models.F("unread_notifications") - 1
+    user_info.save()

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load static from staticfiles %}
+{% load i18n %}
 
 {% block content %}
 <div class="row">
@@ -22,8 +23,8 @@
     {% if participant == None %}
     <a href="/social/application/group/{{ group.id }}" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Apply to group</a>
     {% elif participant.admin %}
-    <a href="#message" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Create new event</a>
-    <a href="#message" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Broadcast message</a>
+    <a href="#message" class="btn btn-primary btn-sm" role="button" data-toggle="modal">{% trans "Create event" %}</a>
+    <a href="#broadcast" class="btn btn-primary btn-sm" role="button" data-toggle="modal">{% trans "Broadcast message" %}</a>
     {% endif %}
     {% if request.user == group.owner %}
     <a href="#add-admin" class="btn btn-primary btn-sm" role="button" data-toggle="modal">Add admin</a>
@@ -167,7 +168,7 @@
       <div class="modal-body">
 	<form action="/social/group/cancel/{{ group.id }}" method='POST'>{% csrf_token %}
 	  <b><p>Send message to other participants to explain why you decided to close this group:</p></b>
-	  <textarea id="cancel-group-message" name="cancel-text" rows="10" cols="40"></textarea>
+	  <textarea id="cancel-group-message" name="cancel-text" rows="10" style="width:100%"></textarea>
 	  <p><input type='submit' value='Close group' /></p>
 	</form>
       </div>
@@ -175,6 +176,22 @@
   </div>
 </div>
 
+{% endif %}
+
+{% if participant.admin %}
+<div class="modal fade" id="broadcast" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+	<form action="/social/broadcast/group/{{ group.id }}" method='POST'>{% csrf_token %}
+	  <p>{% trans "Type message that you want to send to other members of this group" %}:</p>
+	  <textarea id="broadcast-message" name="broadcast-text" rows="10" style="width:100%"></textarea>
+	  <p><input type='submit' value="{% trans 'Send' %}" /></p>
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endif %}
 
 {% block js %}

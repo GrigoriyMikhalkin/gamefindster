@@ -7,7 +7,7 @@ urlpatterns = [
     url(r'^user/(?P<id>\d+)$', views.user_page),
     url(r'^group/(?P<id>\d+)$', views.group_page),
     url(r'^messages/$', views.messages),
-    url(r'^events/$', views.events),
+    url(r'^events/(?P<gid>\d+)$', views.events),
     url(r'^notifications/$', views.notifications),
     url(r'^contacts/$', views.contacts),
     url(r'^contacts_g/$', views.contacts_g),

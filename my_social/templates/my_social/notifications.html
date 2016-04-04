@@ -25,7 +25,7 @@
 	    <hr>
 	    {% with object.request.event_application.request_class as event %}
 	    <div class="col-md-2">
-	      <a href="/social/user/{{ object.sender }}">
+	      <a href="/social/user/{{ object.sender.id }}">
 		<img src="{{ object.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ object.sender.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
 		<center><p style="margin-bottom:-5%;">{{ object.sender }}</p></center>
 	      </a>
@@ -41,6 +41,78 @@
 	      </div>
 	      <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ event.start_time }}<p>
 	      <p><t style="color:#0087BD">{% trans "Full" %}:</t> {{ event.participation_set.count }}/{{ event.participant_number }}</p>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if object.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ object.text }}</p>
+	      {% endif %}
+	    </div>
+	    {% endwith %}
+
+	    {% elif object.type == "friend_application" %}
+
+	    <div class="row" style="margin-bottom:-2%">
+	      <div class="col-md-2" style="margin-top:1%">
+		<a href="/social/notification/accept/{{ object.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+		<a href="/social/notification/reject/{{ object.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-10" style="margin-top:-1%">
+		  <h3 style="font-family:utopia">{% trans object.label %}</h3>
+		</div>
+	    </div>
+	    <hr>
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ object.sender.id }}">
+		<img src="{{ object.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ object.sender.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ object.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-1%">
+	      <p><t style="color:#0087BD">{% trans "Age" %}:</t> {{ object.sender.info.age }}<p>
+	      <p><t style="color:#0087BD">{% trans "Sex" %}:</t> {% if object.sender.info.sex %}{% trans "Male" %} {% elif object.sender.info.sex == None %} {% else %} {% trans "Female" %} {% endif %}<p>
+	      <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ object.sender.info.location }}</p>
+	      <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for language in object.sender.languages.all %}{% trans language.language.name %}, {% endfor %}</p>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if object.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ object.text }}</p>
+	      {% endif %}
+	    </div>
+
+	    {% elif object.type == "group_application" %}
+
+	    <div class="row" style="margin-bottom:-2%">
+	      <div class="col-md-2" style="margin-top:1%">
+		<a href="/social/notification/accept/{{ object.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+		<a href="/social/notification/reject/{{ object.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-10" style="margin-top:-1%">
+		  <h3 style="font-family:utopia">{% trans object.label %}</h3>
+		</div>
+	    </div>
+	    <hr>
+	    {% with object.request.group_application.request_class as group %}
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ object.sender.id }}">
+		<img src="{{ object.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ object.sender.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ object.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-2%">
+	      <div class="row">
+		<div class="col-md-2" style="margin-top:2%">
+		  <a href="/social/group/{{ group.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-6">
+		  <h4>{{ group.group_name }}</h4>
+		</div>
+	      </div>
+	      <p><t style="color:#0087BD">{% trans "Age" %}:</t> {{ object.sender.info.age }}<p>
+	      <p><t style="color:#0087BD">{% trans "Sex" %}:</t> {% if object.sender.info.sex %}{% trans "Male" %} {% elif object.sender.info.sex == None %} {% else %} {% trans "Female" %} {% endif %}<p>
+	      <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ object.sender.info.location }}</p>
+	      <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for language in object.sender.languages.all %}{% trans language.language.name %}, {% endfor %}</p>
 	    </div>
 	    <div class="col-md-6" style="margin-top:-2%">
 	      {% if object.text != None %}
@@ -96,6 +168,44 @@
 	    </div>
 	    {% endwith %}
 
+	     {% elif object.type == "group_invitation" %}
+	    
+	    <div class="row" style="margin-bottom:-2%">
+	      <div class="col-md-2" style="margin-top:1%">
+		<a href="/social/notification/accept/{{ object.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+		<a href="/social/notification/reject/{{ object.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-10" style="margin-top:-1%">
+		  <h3 style="font-family:utopia">{% trans object.label %}</h3>
+		</div>
+	    </div>
+	    <hr>
+	    {% with object.request.group_application.request_class as group %}
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ object.sender.id }}">
+		<img src="{{ object.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ object.sender }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ object.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-2%">
+	      <div class="row">
+		<div class="col-md-2" style="margin-top:2%">
+		  <a href="/social/group/{{ group.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-6">
+		  <h4>{{ group.group_name }}</h4>
+		</div>
+	      </div>
+	      <p><t style="color:#0087BD">{% trans "Number of participants" %}:</t> {{ group.groupparticipation_set.all.count }}<p>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if object.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ object.text }}</p>
+	      {% endif %}
+	    </div>
+	    {% endwith %}
+
 	    {% elif object.type == "event" %}
 	    
 	    <div class="row" style="margin-bottom:-1%">
@@ -122,6 +232,70 @@
 	      </div>
 	      <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ event.start_time }}<p>
 	      <p><t style="color:#0087BD">{% trans "Full" %}:</t> {{ event.participation_set.count }}/{{ event.participant_number }}</p>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if object.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ object.text }}</p>
+	      {% endif %}
+	    </div>
+	    {% endwith %}
+
+	    {% elif object.type == "friend" %}
+
+	    <div class="row" style="margin-bottom:-1%">
+	      <div class="col-md-12" style="margin-top:-1%">
+		<h3 style="font-family:utopia">{% trans object.label %}</h3>
+	      </div>
+	    </div>
+	    <hr>
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ object.sender.id }}">
+		<img src="{{ object.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ object.sender.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ object.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-1%">
+	      <p><t style="color:#0087BD">{% trans "Age" %}:</t> {{ object.sender.info.age }}<p>
+	      <p><t style="color:#0087BD">{% trans "Sex" %}:</t> {% if object.sender.info.sex %}{% trans "Male" %} {% elif object.sender.info.sex == None %} {% else %} {% trans "Female" %} {% endif %}<p>
+	      <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ object.sender.info.location }}</p>
+	      <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for language in object.sender.languages.all %}{% trans language.language.name %}, {% endfor %}</p>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if object.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ object.text }}</p>
+	      {% endif %}
+	    </div>
+
+	    {% elif object.type == "group" %}
+
+	    <div class="row" style="margin-bottom:-1%">
+	      <div class="col-md-12" style="margin-top:-1%">
+		<h3 style="font-family:utopia">{% trans object.label %}</h3>
+	      </div>
+	    </div>
+	    <hr>
+	    {% with object.group_notification.notification_subject as group %}
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ object.sender.id }}">
+		{% if object.sender.info.currentpic == None %}
+		<img src="/media/user/pic/not_available.gif" class="img-responsive" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;">
+		{% else %}
+		<img src="{{ object.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ object.sender }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		{% endif %}
+		<center><p style="margin-bottom:-5%;">{{ object.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-2%">
+	      <div class="row">
+		<div class="col-md-2" style="margin-top:2%">
+		  <a href="/social/group/{{ group.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-6">
+		  <h4>{{ group.group_name }}</h4>
+		</div>
+	      </div>
 	    </div>
 	    <div class="col-md-6" style="margin-top:-2%">
 	      {% if object.text != None %}

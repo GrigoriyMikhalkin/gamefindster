@@ -2,6 +2,7 @@
 
 {% load static from staticfiles %}
 {% load i18n %}
+{% load endless %}
 
 {% block css %}
 {{ block.super }}
@@ -48,6 +49,7 @@
 
 <hr>
 
+{% if request.user.is_authenticated %}
 <div class="row">
   <div class="col-md-0">
   </div>
@@ -60,71 +62,25 @@
     </form>
   </div>
   <div class="col-md-2">
-        {% if request.user.is_authenticated %}
 	<div class="thumbnail" style="border-radius:30px">
 	  <center><a href="#filter-parameters" data-toggle="modal"><h4>{% trans "Filter parameters" %}</h4></a></center>
 	</div>
-    {% endif %}
   </div>
   <div class="col-md-2">
-    {% if request.user.is_authenticated %}
     <div class="thumbnail" style="border-radius:30px">
       <center><a href="#event" data-toggle="modal"><h4>{% trans "Create new event" %}</h4></a></center>
     </div>
-    {% endif %}
   </div>
 
 </div>
 
 <hr>
 
-{% for event in events %}
-<div class="thumbnail" style="border-radius:20px;background:#F5F5DC">
-	<div class="row">
-	  <div class="col-md-2">
-	    <a href="/game/{{ event.game.id }}">
-		<img src="{{ event.game.cover.thumbnail.url }}" class="img-responsive" alt="{{ event.game.name }}" style="margin-top:3%;border-radius:10px 0px 0px 10px;"/>
-	    </a>
-	  </div>
-	  <div class="col-md-4" style="margin-top:-1%">
-	    <h3><a href="/event/{{ event.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>{{ event.name }}</h3>
-	    <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ event.start_time }}<p>
-	    <p><t style="color:#0087BD">{% trans "Full" %}:</t> {{ event.participation_set.count }}/{{ event.participant_number }}</p>
-	    <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ event.location.country }}, {{ event.location }}</p>
-	    <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for lang in event.languages.all %} {% trans lang.language.name %}, {% endfor %}</p>
-	    <div class="row">
-	      <div class="col-md-3">
-		<t style="color:#0087BD">{% trans "Platform" %}:</t>
-	      </div>
-	      <div class="col-md-2">
-		<img src="{{ event.platform.logo.thumbnail.url }}" class="img-responsive" alt="{{ event.platform.name }}"/>
-	      </div>
-	    </div>
-	  </div>
-	  <div class="col-md-6" style="margin-top:-1%">
-	    <h3>{% trans "Description" %}:</h3>
-	    <p>{{ event.description }}</p>
-	  </div>
-      </div>
-</div>
+{% endif %}
 
-{% endfor %}
 
-<div class="pagination">
-    <span class="step-links">
-        {% if events.has_previous %}
-            <a href="?page={{ events.previous_page_number }}">previous</a>
-        {% endif %}
+{% include page_template %}
 
-        <span class="current">
-            Page {{ events.number }} of {{ events.paginator.num_pages }}.
-        </span>
-
-        {% if events.has_next %}
-            <a href="?page={{ events.next_page_number }}">next</a>
-        {% endif %}
-    </span>
-</div>
 {% endblock content %}
 
 {% if request.user.is_authenticated %}
@@ -283,6 +239,12 @@
   $("#period-end").datetimepicker({
       step: 15,
       format: "Y-m-d H:i"
+  });
+</script>
+
+<script>$.endlessPaginate({
+  paginateOnScroll: true,
+  paginateOnScrollMargin: 20
   });
 </script>
 

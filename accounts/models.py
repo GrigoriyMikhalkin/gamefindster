@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from stdimage.models import StdImageField
@@ -32,6 +33,13 @@ class UserInfo(models.Model):
     timezone = models.CharField(max_length=32,null=True)
     unread_notifications = models.PositiveSmallIntegerField(default=0)
     unread_messages = models.PositiveSmallIntegerField(default=0)
+    last_active = models.DateTimeField(verbose_name="last active",null=True)
+
+    def age(self):
+        if self.birthdate is None:
+            return None
+        diff = datetime.now - birthdate.date
+        return diff.year
 
 class UserSettings(models.Model):
     user = models.OneToOneField(User,related_name="settings")
@@ -53,9 +61,13 @@ class UserSearchSettings(models.Model):
     ending = models.DateTimeField(verbose_name="ending",null=True)
 
     def get_beginning_date(self):
+        if self.beginning is None:
+            return None
         return self.beginning.strftime("%Y-%m-%d %H:%M")
 
     def get_ending_date(self):
+        if self.ending is None:
+            return None
         return self.ending.strftime("%Y-%m-%d %H:%M")
 
 class UserPlatform(models.Model):

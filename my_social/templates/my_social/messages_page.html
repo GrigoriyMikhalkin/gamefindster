@@ -1,0 +1,28 @@
+{% load endless %}
+{% load i18n %}
+
+
+{% lazy_paginate 10 messages %}
+
+{% for message in messages %}
+
+<div class="row" style="margin-top:1%">
+  <div class="col-md-1">
+    	<a href="/social/user/{{ message.sender.id }}">
+	  <img src="{{ message.sender.info.currentpic.avatar.thumbnail.url }}" class="img-circle" style="margin-top:3%;"/>
+	</a>
+  </div>
+  <div class="col-md-11" >
+    <div class="thumbnail" {% if message.sender == request.user %} style="background:#ebedf2;z-index:10;border:0 none transparent;" {% elif message.is_read %} style="background:#ebedf2;z-index:10;border:0 none transparent;" {% else %} style="background:#ACE1AF;z-index:10;border:0 none transparent" {% endif %}>
+      <div class="caption" style="margin-top:-1%;">
+	<p style="margin-bottom:-2%;color:#0087BD">{% trans "sent" %} {{ message.created }}</p>
+	<hr>
+	<p>{{ message.text }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+
+{% show_more %}

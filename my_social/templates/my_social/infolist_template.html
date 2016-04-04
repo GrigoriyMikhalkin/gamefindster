@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% load endless %}
+
+{% block content %}
+{% if messages %}
+<div class="row" style="margin-top:3%">
+  <div class="col-sm-12">
+    <form method="POST">{% csrf_token %}
+      {{ form.media }}
+      {{ form.as_p }}
+      <input type="submit" class="btn brm-lg" value={% trans "Send message" %}/>
+    </form>
+  </div>
+</div>
+<hr>
+{% endif %}
+
+{% include page_template %}
+
+{% endblock content %}
+
+{% block js %}
+{{ block.super }}
+
+<script>$.endlessPaginate({
+  paginateOnScroll: true,
+  paginateOnScrollMargin: 20
+  });
+</script>
+
+<script>
+  $("form p label").hide();
+  $("#id_text").attr("rows","5");
+  $("#id_text").css("width","100%");
+</script>
+
+{% endblock js %}

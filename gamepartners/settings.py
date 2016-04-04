@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 from .auth_config import *
-from .middleware import TimezoneMiddleware
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -62,6 +61,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'gamepartners.middleware.TimezoneMiddleware',
+    'gamepartners.middleware.LastActivityMiddleware',
 ]
 
 SESSION_ENGINE = 'user_sessions.backends.db'
@@ -146,6 +146,10 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 ACCOUNT_ACTIVATION_DAYS = 3
+
+USER_ONLINE_TIMEOUT = 300
+
+USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

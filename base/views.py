@@ -39,10 +39,13 @@ def index(request,template="base/index.html",extra_context=None):
     return render(request,template,context)
 
 
-def show_game_events(request,id):
+@page_template("base/events_page.html")
+def show_game_events(request,id,template="base/game_detail.html",extra_context=None):
     user = request.user
     game = get_object_or_404(Game, id=id)
     event_list = game.event_set.filter(is_full=False,before__gt=timezone.now())
+    form = None
+    location_value = None
     
     if user.is_authenticated():
 
@@ -138,29 +141,26 @@ def show_game_events(request,id):
             
             return HttpResponseRedirect("/game/%s" % id)
     
-    paginator = Paginator(event_list,25)
-
-    page = request.GET.get('page')
-    try:
-        events = paginator.page(page)
-    except PageNotAnInteger:
-        events = paginator.page(1)
-    except EmptyPage:
-        events = paginator.page(paginator.num_pages)
-
     context = {
         "game": game,
-        "events": events,
+        "events": event_list,
         "request": request,
         "form": form,
         "location_value": location_value,
     }
-    return render(request,"base/game_detail.html",context)
+    if extra_context is not None:
+        context.update(extra_context)
+    
+    return render(request,template,context)
 
 
 def show_event_details(request,id):
     event = get_object_or_404(Event, id=id)
-    participant = event.participation_set.filter(participant=request.user)
+    participant = None
+    
+    if request.user.is_authenticated():
+        participant = event.participation_set.filter(participant=request.user)
+
     context = {
         "event": event,
         "request": request,

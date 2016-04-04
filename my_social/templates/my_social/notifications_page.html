@@ -1,0 +1,344 @@
+{% load endless %}
+{% load i18n %}
+
+{% lazy_paginate 5 notifications %}
+
+{% for notification in notifications %}
+<div class="row" style="margin-top:1%;">
+  <div class="col-sm-12">
+    <div class="thumbnail" style="border-radius:20px;background:#B0E0E6">
+      <div class="caption" style="margin-top:-1%">
+	<div class="row">
+	  <div class="col-md-11">
+	    {% if notification.type == "event_application" %}
+
+	    <div class="row" style="margin-bottom:-2%">
+	      <div class="col-md-2" style="margin-top:1%">
+		<a href="/social/notification/accept/{{ notification.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+		<a href="/social/notification/reject/{{ notification.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-10" style="margin-top:-1%">
+		  <h3 style="font-family:utopia">{% trans notification.label %}</h3>
+		</div>
+	    </div>
+	    <hr>
+	    {% with notification.request.event_application.request_class as event %}
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ notification.sender.id }}">
+		<img src="{{ notification.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ notification.sender.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ notification.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-2%">
+	      <div class="row">
+		<div class="col-md-2" style="margin-top:2%">
+		  <a href="/event/{{ event.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-6">
+		  <h4>{{ event.name }}</h4>
+		</div>
+	      </div>
+	      <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ event.start_time }}<p>
+	      <p><t style="color:#0087BD">{% trans "Full" %}:</t> {{ event.participation_set.count }}/{{ event.participant_number }}</p>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if notification.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ notification.text }}</p>
+	      {% endif %}
+	    </div>
+	    {% endwith %}
+
+	    {% elif notification.type == "friend_application" %}
+
+	    <div class="row" style="margin-bottom:-2%">
+	      <div class="col-md-2" style="margin-top:1%">
+		<a href="/social/notification/accept/{{ notification.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+		<a href="/social/notification/reject/{{ notification.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-10" style="margin-top:-1%">
+		  <h3 style="font-family:utopia">{% trans notification.label %}</h3>
+		</div>
+	    </div>
+	    <hr>
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ notification.sender.id }}">
+		<img src="{{ notification.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ notification.sender.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ notification.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-1%">
+	      <p><t style="color:#0087BD">{% trans "Age" %}:</t> {{ notification.sender.info.age }}<p>
+	      <p><t style="color:#0087BD">{% trans "Sex" %}:</t> {% if notification.sender.info.sex %}{% trans "Male" %} {% elif notification.sender.info.sex == None %} {% else %} {% trans "Female" %} {% endif %}<p>
+	      <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ notification.sender.info.location }}</p>
+	      <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for language in notification.sender.languages.all %}{% trans language.language.name %}, {% endfor %}</p>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if notification.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ notification.text }}</p>
+	      {% endif %}
+	    </div>
+
+	    {% elif notification.type == "group_application" %}
+
+	    <div class="row" style="margin-bottom:-2%">
+	      <div class="col-md-2" style="margin-top:1%">
+		<a href="/social/notification/accept/{{ notification.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+		<a href="/social/notification/reject/{{ notification.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-10" style="margin-top:-1%">
+		  <h3 style="font-family:utopia">{% trans notification.label %}</h3>
+		</div>
+	    </div>
+	    <hr>
+	    {% with notification.request.group_application.request_class as group %}
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ notification.sender.id }}">
+		<img src="{{ notification.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ notification.sender.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ notification.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-2%">
+	      <div class="row">
+		<div class="col-md-2" style="margin-top:2%">
+		  <a href="/social/group/{{ group.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-6">
+		  <h4>{{ group.group_name }}</h4>
+		</div>
+	      </div>
+	      <p><t style="color:#0087BD">{% trans "Age" %}:</t> {{ notification.sender.info.age }}<p>
+	      <p><t style="color:#0087BD">{% trans "Sex" %}:</t> {% if notification.sender.info.sex %}{% trans "Male" %} {% elif notification.sender.info.sex == None %} {% else %} {% trans "Female" %} {% endif %}<p>
+	      <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ notification.sender.info.location }}</p>
+	      <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for language in notification.sender.languages.all %}{% trans language.language.name %}, {% endfor %}</p>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if notification.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ notification.text }}</p>
+	      {% endif %}
+	    </div>
+	    {% endwith %}
+	    
+	    {% elif notification.type == "event_invitation" %}
+	    
+	    <div class="row" style="margin-bottom:-2%">
+	      <div class="col-md-2" style="margin-top:1%">
+		<a href="/social/notification/accept/{{ notification.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+		<a href="/social/notification/reject/{{ notification.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-10" style="margin-top:-1%">
+		  <h3 style="font-family:utopia">{% trans notification.label %}</h3>
+		</div>
+	    </div>
+	    <hr>
+	    {% with notification.request.event_application.request_class as event %}
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ event.owner.id }}">
+		<img src="{{ event.owner.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ event.owner.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ event.owner }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-2%">
+	      <div class="row">
+		<div class="col-md-2" style="margin-top:2%">
+		  <a href="/event/{{ event.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-6">
+		  <h4>{{ event.name }}</h4>
+		</div>
+	      </div>
+	      <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ event.start_time }}<p>
+		<div class="row">
+		  <div class="col-md-3">
+		    <t style="color:#0087BD">{% trans "Platform" %}:</t>
+		  </div>
+		  <div class="col-md-2">
+		    <img src="{{ event.platform.logo.thumbnail.url }}" class="img-responsive" alt="{{ event.platform.name }}"/>
+		  </div>
+		</div>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if notification.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ notification.text }}</p>
+	      {% endif %}
+	    </div>
+	    {% endwith %}
+
+	     {% elif notification.type == "group_invitation" %}
+	    
+	    <div class="row" style="margin-bottom:-2%">
+	      <div class="col-md-2" style="margin-top:1%">
+		<a href="/social/notification/accept/{{ notification.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+		<a href="/social/notification/reject/{{ notification.request.id }}" class="btn btn-lg" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-10" style="margin-top:-1%">
+		  <h3 style="font-family:utopia">{% trans notification.label %}</h3>
+		</div>
+	    </div>
+	    <hr>
+	    {% with notification.request.group_application.request_class as group %}
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ notification.sender.id }}">
+		<img src="{{ notification.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ notification.sender }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ notification.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-2%">
+	      <div class="row">
+		<div class="col-md-2" style="margin-top:2%">
+		  <a href="/social/group/{{ group.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-6">
+		  <h4>{{ group.group_name }}</h4>
+		</div>
+	      </div>
+	      <p><t style="color:#0087BD">{% trans "Number of participants" %}:</t> {{ group.groupparticipation_set.all.count }}<p>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if notification.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ notification.text }}</p>
+	      {% endif %}
+	    </div>
+	    {% endwith %}
+
+	    {% elif notification.type == "event" %}
+	    
+	    <div class="row" style="margin-bottom:-1%">
+	      <div class="col-md-12" style="margin-top:-1%">
+		<h3 style="font-family:utopia">{% trans notification.label %}</h3>
+	      </div>
+	    </div>
+	    <hr>
+	    {% with notification.event_notification.notification_subject as event %}
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ notification.sender.id }}">
+		<img src="{{ notification.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ notification.sender.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ notification.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-2%">
+	      <div class="row">
+		<div class="col-md-2" style="margin-top:2%">
+		  <a href="/event/{{ event.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-6">
+		  <h4>{{ event.name }}</h4>
+		</div>
+	      </div>
+	      <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ event.start_time }}<p>
+	      <p><t style="color:#0087BD">{% trans "Full" %}:</t> {{ event.participation_set.count }}/{{ event.participant_number }}</p>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if notification.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ notification.text }}</p>
+	      {% endif %}
+	    </div>
+	    {% endwith %}
+
+	    {% elif notification.type == "friend" %}
+
+	    <div class="row" style="margin-bottom:-1%">
+	      <div class="col-md-12" style="margin-top:-1%">
+		<h3 style="font-family:utopia">{% trans notification.label %}</h3>
+	      </div>
+	    </div>
+	    <hr>
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ notification.sender.id }}">
+		<img src="{{ notification.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ notification.sender.name }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		<center><p style="margin-bottom:-5%;">{{ notification.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-1%">
+	      <p><t style="color:#0087BD">{% trans "Age" %}:</t> {{ notification.sender.info.age }}<p>
+	      <p><t style="color:#0087BD">{% trans "Sex" %}:</t> {% if notification.sender.info.sex %}{% trans "Male" %} {% elif notification.sender.info.sex == None %} {% else %} {% trans "Female" %} {% endif %}<p>
+	      <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ notification.sender.info.location }}</p>
+	      <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for language in notification.sender.languages.all %}{% trans language.language.name %}, {% endfor %}</p>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if notification.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ notification.text }}</p>
+	      {% endif %}
+	    </div>
+
+	    {% elif notification.type == "group" %}
+
+	    <div class="row" style="margin-bottom:-1%">
+	      <div class="col-md-12" style="margin-top:-1%">
+		<h3 style="font-family:utopia">{% trans notification.label %}</h3>
+	      </div>
+	    </div>
+	    <hr>
+	    {% with notification.group_notification.notification_subject as group %}
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ notification.sender.id }}">
+		{% if notification.sender.info.currentpic == None %}
+		<img src="/media/user/pic/not_available.gif" class="img-responsive" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;">
+		{% else %}
+		<img src="{{ notification.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ notification.sender }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		{% endif %}
+		<center><p style="margin-bottom:-5%;">{{ notification.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-4" style="margin-top:-2%">
+	      <div class="row">
+		<div class="col-md-2" style="margin-top:2%">
+		  <a href="/social/group/{{ group.id }}" class="btn btn-lg"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+		</div>
+		<div class="col-md-6">
+		  <h4>{{ group.group_name }}</h4>
+		</div>
+	      </div>
+	    </div>
+	    <div class="col-md-6" style="margin-top:-2%">
+	      {% if notification.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ notification.text }}</p>
+	      {% endif %}
+	    </div>
+	    {% endwith %}
+
+	    {% elif notification.type == "cancellation" %}
+
+	    <div class="row" style="margin-bottom:-1%">
+	      <div class="col-md-12" style="margin-top:-1%">
+		<h3 style="font-family:utopia">{% trans notification.label %}</h3>
+	      </div>
+	    </div>
+	    <hr>
+	    <div class="col-md-2">
+	      <a href="/social/user/{{ notification.sender.id }}">
+		{% if notification.sender.info.currentpic == None %}
+		<img src="/media/user/pic/not_available.gif" class="img-responsive" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;">
+		{% else %}
+		<img src="{{ notification.sender.info.currentpic.avatar.thumbnail.url }}" class="img-responsive" alt="{{ notification.sender }}" style="width:100px;margin-top:-10%;border-radius:10px 0px 0px 10px;"/>
+		{% endif %}
+		<center><p style="margin-bottom:-5%;">{{ notification.sender }}</p></center>
+	      </a>
+	    </div>
+	    <div class="col-md-10" style="margin-top:-2%">
+	      {% if notification.text != None %}
+	      <h4>{% trans "Message" %}:</h4>
+	      <p>{{ notification.text }}</p>
+	      {% endif %}
+	    </div>
+	    
+	    {% endif %}
+	  </div>
+	  <div class="col-md-1">
+	    <a href="/social/notification/delete/{{ notification.id }}" class="btn btn-lg" style="margin-top:10%;margin-left:10%"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></a>
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% show_more %}

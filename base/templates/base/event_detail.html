@@ -101,7 +101,7 @@
       <div class="modal-body">
 	<form action="/social/broadcast/event/{{ event.id }}" method='POST'>{% csrf_token %}
 	  <p>Type message that you want to send to other participants of this event:</p>
-	  <textarea id="broadcast-event-message" name="broadcast-text" rows="10" cols="40"></textarea>
+	  <textarea id="broadcast-event-message" name="broadcast-text" rows="10" style="width:100%"></textarea>
 	  <p><input type='submit' value='Send' /></p>
 	</form>
       </div>

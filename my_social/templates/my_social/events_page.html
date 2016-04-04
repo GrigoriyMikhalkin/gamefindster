@@ -1,0 +1,55 @@
+{% load endless %}
+{% load i18n %}
+{% load date_tags %}
+
+{% lazy_paginate 7 participations %}
+
+{% for participation in participations %}
+
+{% if participation.event.start_time|expired %}
+<div class="thumbnail" style="border-radius:20px;background:#FF6961;margin-top:2%">
+  <div class="row">
+    <div class="col-md-2">
+      <a href="/game/{{ participation.event.game.id }}">
+	<img src="{{ participation.event.game.cover.thumbnail.url }}" class="img-responsive" alt="{{ participation.event.game.name }}" style="margin-top:3%;border-radius:10px 0px 0px 10px"/>
+      </a>
+    </div>
+    <div class="col-md-9" style="margin-top:-1%">
+      <h3><a href="/event/{{ participation.event.id }}">{{ participation.event.name }}</a>({{participation.event.game.name}})</h3>
+      <div class="user-role" style="color:white">
+	{% if participation.event.owner %}
+	<p>{% trans "Host" %}</p>
+	{% else %}
+	<p>{% trans "Participant" %}</p>
+	{% endif %}
+      </div>
+      <p><t style="color:white">{% trans "Start time" %}:</t> {{ participation.event.start_time }}<p>
+    </div>
+  </div>
+</div>	       
+{% else %}
+<div class="thumbnail" style="border-radius:20px;background:#ACE1AF;margin-top:2%">
+  <div class="row">
+    <div class="col-md-2">
+      <a href="/game/{{ participation.event.game.id }}">
+	<img src="{{ participation.event.game.cover.thumbnail.url }}" class="img-responsive" alt="{{ participation.event.game.name }}" style="margin-top:3%;border-radius:10px 0px 0px 10px"/>
+      </a>
+    </div>
+    <div class="col-md-9" style="margin-top:-1%">
+      <h3><a href="/event/{{ participation.event.id }}">{{ participation.event.name }}</a>({{participation.event.game.name}})</h3>
+      <div class="user-role" style="color:#0087BD">
+	{% if participation.event.owner %}
+	<p>{% trans "Host" %}</p>
+	{% else %}
+	<p>{% trans "Participant" %}</p>
+	{% endif %}
+      </div>
+      <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ participation.event.start_time }}<p>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endfor %}
+
+{% show_more %}

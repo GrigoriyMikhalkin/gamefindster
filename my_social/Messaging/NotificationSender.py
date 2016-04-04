@@ -1,5 +1,11 @@
-from my_social.models import *
 from django.utils.translation import ugettext_noop as _
+from django.db.models import F
+from django.conf import settings
+from django.utils import timezone
+
+# Import models
+from my_social.models import *
+from accounts.models import UserInfo
 
 class NotificationSender():
     def __init__(self,user,receiver=None):
@@ -168,9 +174,9 @@ class FriendRequestSender(ActionNotificationSender):
     def __init__(self,user,friend,receiver=None):
         super().__init__(user,receiver)
 
-        self.label = _("%(username)s wants to be your friend") %  {"username":self.user.username}
-        self.accept_label = _("%(username)s now is your friend") % {"username":self.user.username}
-        self.reject_label = _("%(username)s rejected your proposal") % {"username":self.user.username}
+        self.label = _("Friend request")
+        self.accept_label = _("Friend request accepted")
+        self.reject_label = _("Friend request rejected")
         self.notification_type = "friend_application"
         self.request_object = friend
         self.model_object = FriendApplication
@@ -212,9 +218,9 @@ class GroupRequestSender(ActionNotificationSender):
     def __init__(self,user,group,receiver=None):
         super().__init__(user,receiver)
 
-        self.label = _("%(username)s wants to be group member") % {"username":self.user.username}
-        self.accept_label = _("Now you're member of group '%(groupname)s'") % {"groupname":group.group_name}
-        self.reject_label = _("%(username)s rejected your proposal") % {"username":self.user.username}
+        self.label = _("Request to join the group")
+        self.accept_label = _("You're accepted to the group")
+        self.reject_label = _("You're rejected to join the group")
         self.notification_type = "group_application"
         self.request_object = group
         self.model_object = GroupApplication
@@ -304,9 +310,9 @@ class GroupInviteSender(ActionNotificationSender):
     def __init__(self,user,group,receiver=None):
         super().__init__(user,receiver)
         
-        self.label = _("%(username)s invites you to join group '%(groupname)s'") %  {"username":self.user.username, "groupname":group.group_name}
-        self.accept_label = _("%(username)s now member of group '%(groupname)s'") % {"username":self.user.username, "groupname":group.group_name}
-        self.reject_label = _("%(username)s refused to be member of group '%(groupname)s'") % {"username":self.user.username, "groupname":group.group_name}
+        self.label = _("Invitation to join group")
+        self.accept_label = _("Invitation to group was accepted")
+        self.reject_label = _("Invitation to group was rejected")
         self.notification_type = "group_invitation"
         self.request_object = group
         self.model_object = GroupApplication
@@ -381,7 +387,7 @@ class CancellationBroadcaster(NotificationSender):
 class EventBroadcaster(SimpleEventSender):
 
     def __init__(self,user,event):
-        label = "Message from owner of event '%s'." % event.name
+        label = _("Broadcast message from owner of event")
         super().__init__(user,event,label)
 
     def get_permission(self):
@@ -400,11 +406,41 @@ class EventBroadcaster(SimpleEventSender):
 
 class GroupBroadcaster(SimpleGroupSender):
     def __init__(self,user,group):
-        label = "Message from owner of group '%s'." % group.name
+        label = _("Broadcast message from admin of the group")
         super().__init__(user,group,label)
+
+    def get_permission(self):
+        participation = GroupParticipation.objects.get(group=self.notification_object,participant=self.user)
+        if not participation.admin:
+            return False
+
+        return self.permission
+
+    def broadcast(self,text):
+        if self.get_permission():
+            for participation in self.notification_object.groupparticipation_set.all():
+                receiver = participation.participant
+                if receiver != self.user:
+                    self.send_notification(receiver,text)
 
 
 class FriendBroadcaster(SimpleFriendSender):
     def __init__(self,user):
-        label = "Message from ." % user.name
-        super().__init__(user,label)
+        label = _("Broadcast message from user")
+        super().__init__(user,user,label)
+
+    def get_permission(self):
+        return self.permission
+
+    def broadcast(self,text,friend_filter):
+        if self.get_permission():
+            friends =  self.user.friends.all()
+            timeout_range = timezone.now() - timezone.timedelta(seconds=settings.USER_ONLINE_TIMEOUT)              
+            if friend_filter == "offline":
+                friends = friends.filter(friend__info__last_active__lt=timeout_range)
+            elif friend_filter == "online":
+                friends = friends.filter(friend__info__last_active__gt=timeout_range)
+
+            for friend in friends:
+                receiver = friend.friend
+                self.send_notification(receiver,text)
