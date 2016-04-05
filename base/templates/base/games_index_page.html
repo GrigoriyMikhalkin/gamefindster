@@ -10,7 +10,7 @@
       <a href="/game/{{ game.id }}">
 	<img src="{{ game.cover.large.url }}" class="img-responsive" style="border-radius:20px 20px 0 0"/>
 	<div class="caption" style="">
-	  <h3 style="color:black;text-align:center">{{ game.name }}</h3>
+	  <h3 style="color:black;text-align:center">{{ game.name|truncatechars:22 }}</h3>
       </a>
       <p style="text-align:center;color:#A45A52"> {{ game.number_of_events }} {% trans "events is active" %}</p>
       </div>
