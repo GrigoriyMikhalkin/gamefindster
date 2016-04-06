@@ -20,6 +20,7 @@ class Game(models.Model):
     publisher = models.CharField(
         max_length=512,blank=True, null=True)
     description = models.TextField()
+    event_number = models.PositiveIntegerField(default=0)
     """
     platforms = models.ManyToManyField(
         Platform,blank=True, null=True)
@@ -40,6 +41,9 @@ class Game(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ["-event_number"]
 
     
 class Platform(models.Model):
@@ -96,3 +100,24 @@ class GamePlatform(models.Model):
     
     def __str__(self):
         return(self.game.name + "_" + self.platform.name)
+
+
+# SIGNALS
+    
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+
+@receiver(post_save,sender=Event)
+def new_event(sender,**kwargs):
+    event = kwargs["instance"]
+    game = event.game
+    game.event_number = models.F("event_number") + 1
+    game.save()
+    
+
+@receiver(post_delete,sender=Event)
+def delete_event(sender,**kwargs):
+    event = kwargs["instance"]
+    game = event.game
+    game.event_number = models.F("event_number") - 1
+    game.save()

@@ -143,6 +143,8 @@ class FriendApplication(models.Model):
     request_class = models.ForeignKey(User)    
 
 
+# SIGNALS
+
 import json
 import redis
 from django.db.models.signals import post_save, post_delete
