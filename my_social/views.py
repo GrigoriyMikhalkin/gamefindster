@@ -45,10 +45,6 @@ def user_page(request,id):
     if request.user != user: 
         form = MessageForm(request.POST or None)
         if form.is_valid():
-            info = UserInfo.objects.get(user=user)
-            info.unread_messages = F("unread_messages") + 1
-            info.save()
-            
             instance = form.save(commit=False)
             instance.receiver = user
             instance.sender = request.user
@@ -305,10 +301,6 @@ def read_messages(request,uid,template="my_social/infolist_template.html",extra_
 
     form = MessageForm(request.POST or None)
     if form.is_valid():
-        info = UserInfo.objects.get(user=request_user)
-        info.unread_messages = F("unread_messages") + 1
-        info.save()
-        
         instance = form.save(commit=False)
         instance.receiver = request_user
         instance.sender = user

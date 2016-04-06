@@ -157,6 +157,11 @@ def new_message(sender, **kwargs):
 
     message = kwargs['instance']
     receiver = message.receiver
+    if not message.read:
+        user_info = UserInfo.objects.get(user=receiver)
+        user_info.unread_messages = models.F("unread_messages") + 1
+        user_info.save()
+    
     new_messages = receiver.info.unread_messages
     
     for session in receiver.session_set.all():
