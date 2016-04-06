@@ -90,8 +90,9 @@ class Message(models.Model):
 
         self.read = True
         user_info = UserInfo.objects.get(user=self.receiver)
-        user_info.unread_messages = models.F("unread_messages") - 1
-        user_info.save()
+        if user_info.unread_messages:
+            user_info.unread_messages = models.F("unread_messages") - 1
+            user_info.save()
         self.save()
         
         return False
