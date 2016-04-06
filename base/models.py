@@ -8,6 +8,8 @@ from cities.models import City
     
 class Game(models.Model):
     name = models.CharField(max_length=512)
+    shortcut = models.CharField(max_length=32,null=True,blank=True)
+    is_shortcut = models.BooleanField(default=False)
     cover = StdImageField(upload_to=UploadToUUID(path="games/covers/"),\
                           variations={'thumbnail': {'width':100,'height':100,"crop":True},
                                       'large': {'width':400,'height':400,"crop":True},
@@ -27,6 +29,11 @@ class Game(models.Model):
         events = self.event_set.filter(is_full=False,before__gt=timezone.now())
         num_events = events.count()
         return num_events
+
+    def get_name(self):
+        if self.is_shortcut:
+            return self.shortcut
+        return self.name
     
     def __unicode__(self):
         return self.name
