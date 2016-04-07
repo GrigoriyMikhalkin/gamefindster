@@ -23,8 +23,10 @@ from django.contrib.gis.measure import D
 # Import models
 from .models import UserPic, UserPlatform
 from base.models import Platform
+from accounts.models import LanguageToUser
 from django.contrib.auth.models import User
 from cities.models import City, Country
+from languages_plus.models import Language
 
 
 def is_owner(user,pic):
@@ -123,12 +125,19 @@ def user_settings(request,uid):
     if user != request.user:
         return HttpResponseRedirect('/')
 
+    # Languages setting
+    selected_languages = request.POST.getlist("chk_languages[]")
+    for language in selected_languages:
+        ltu = LanguageToUser.objects.get_or_create(user=user,language=language)
+    
+    languages = Language.objects.all()
+    user_languages = [ language.language for language in user.languages.all() ]
+
     # Platforms setting
     selected_platforms = request.POST.getlist("chk_platforms[]")
     for platform in selected_platforms:
         platform = Platform.objects.get(name=platform)
         up = UserPlatform.objects.get_or_create(user=user,platform=platform)
-        print(up)
         
     platforms = Platform.objects.all()
     user_platforms = [ platform.platform.name for platform in user.platforms.all() ]
@@ -179,6 +188,8 @@ def user_settings(request,uid):
         "latitude": latitude,
         "platforms": platforms,
         "user_platforms": user_platforms,
+        "languages": languages,
+        "user_languages": user_languages,
     }
     
     return render(request, "accounts/settings_general.html", context)

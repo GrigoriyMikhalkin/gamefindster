@@ -8,6 +8,16 @@
 {% block content %}
 
 <form method="POST" style="margin-top:2%">{% csrf_token %}
+  <label for="chk_languages[]">{% trans "What languages do you speak" %}:</label>
+  <div id="choose-language-div" style='border:2px solid #ccc; width:300px; height: 300px; overflow-y: scroll;'>
+    {% for language in languages %}
+    <input type="checkbox" name="chk_languages[]" value="{{ language }}" {% if language.name_en in user_languages %} checked {% endif %}/>{% trans language.name_en %}<br/>
+    {% endfor %}
+  </div>
+  <input type="submit" class="btn btn-primary btn-sm" value={% trans "Apply" %} style="margin-top:2%">
+</form>
+
+<form method="POST" style="margin-top:2%">{% csrf_token %}
   <label for="chk_platforms[]">{% trans "Select platforms that you own" %}:</label>
   <div id="choose-platform-div" style='border:2px solid #ccc; width:300px; height: 100px; overflow-y: scroll;'>
     {% for platform in platforms %}

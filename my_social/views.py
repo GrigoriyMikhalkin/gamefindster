@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 from .models import *
 from base.models import Event
 from accounts.models import UserInfo
+from languages_plus.models import Language
 
 
 # Create your views here.

@@ -1,11 +1,14 @@
 from datetime import datetime
 from django.db import models
-from django.contrib.auth.models import User
 from stdimage.models import StdImageField
 from stdimage.utils import UploadToUUID
-from base.models import Platform, Event
 from django.utils.translation import ugettext_noop as _
+
+# Import models
+from languages_plus.models import Language
 from cities.models import City
+from base.models import Platform, Event
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -85,19 +88,9 @@ class UserPlatform(models.Model):
     platform = models.ForeignKey(Platform)
     search = models.BooleanField(default=False)
 
-    
-class Language(models.Model):
-    name = models.CharField(max_length=128,default="English")
-    def __unicode__(self):
-        return self.name
-
-    def __str__(self):
-        return self.name
-
-
 class LanguageToUser(models.Model):
     user = models.ForeignKey(User,related_name="languages",null=True)
-    language = models.ForeignKey(Language,related_name="users",null=True)
+    language = models.CharField(max_length=64,null=True)
     search = models.BooleanField(default=False)
 
 

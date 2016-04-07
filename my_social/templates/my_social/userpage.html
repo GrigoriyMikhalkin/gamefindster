@@ -56,7 +56,7 @@
 	{% else %}
 	<p>
 	  {% for lang in user.languages.all %}
-	  {% trans lang.language.name %},
+	  {% trans lang.language %},
 	  {% endfor %}
 	</p>
 	{% endif %}

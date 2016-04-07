@@ -11,7 +11,8 @@ from django.contrib.auth.decorators import login_required
 # Import models
 from .models import (Game, Event)
 from my_social.models import Participation
-from accounts.models import Language,LanguageToEvent,UserSearchSettings
+from accounts.models import LanguageToEvent,UserSearchSettings
+from languages_plus.models import Language
 
 # Import search
 from haystack.query import SearchQuerySet
@@ -29,7 +30,7 @@ def index(request,template="base/index.html",extra_context=None):
     Shows scrollable list of most popular games
     """
     if request.user.is_authenticated() and request.user.info.is_first_time():
-        return HttpResponseRedirect("/accounts/settings/location/%s" % request.user.id)
+        return HttpResponseRedirect("/accounts/settings/%s" % request.user.id)
     
     games = Game.objects.all()
     context = {
