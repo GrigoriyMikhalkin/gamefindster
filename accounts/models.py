@@ -96,4 +96,4 @@ class LanguageToUser(models.Model):
 
 class LanguageToEvent(models.Model):
     event = models.ForeignKey(Event,related_name="languages",null=True)
-    language = models.ForeignKey(Language,related_name="events",null=True)
+    language = models.CharField(max_length=64,null=True)
