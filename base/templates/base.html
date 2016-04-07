@@ -125,7 +125,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="{% static 'js/base.js' %}"></script>
     <script src="{% static 'js/endless-pagination.js' %}"></script>
-    <script src="http://localhost:8002/socket.io/socket.io.js"></script>
+    <script src="http://188.166.19.65:8002/socket.io/socket.io.js"></script>
 
     <script type="text/javascript" >
       {% if request.user.info.unread_messages == 0 %}
@@ -133,11 +133,11 @@
       {% endif %}
 
       {% if request.user.info.unread_notifications == 0 %}
-      $("#unread-notifications-badge").show();
+      $("#unread-notifications-badge").hide();
       {% endif %}
       
       $(document).ready(function() {
-          var socket = io("http://localhost:8002");
+          var socket = io("http://188.166.19.65:8002");
 
           socket.on("message", function(message) {
               var message_json = jQuery.parseJSON(message);
