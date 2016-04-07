@@ -69,7 +69,7 @@
 	    </div>
 	    <div class="col-md-4" style="margin-top:-1%">
 	      <p><t style="color:#0087BD">{% trans "Age" %}:</t> {{ notification.sender.info.age }}<p>
-	      <p><t style="color:#0087BD">{% trans "Sex" %}:</t> {% if notification.sender.info.sex %}{% trans "Male" %} {% elif notification.sender.info.sex == None %} {% else %} {% trans "Female" %} {% endif %}<p>
+	      <p><t style="color:#0087BD">{% trans "Sex" %}:</t> {% trans notification.sender.info.get_sex %}<p>
 	      <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ notification.sender.info.location }}</p>
 	      <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for language in notification.sender.languages.all %}{% trans language.language.name %}, {% endfor %}</p>
 	    </div>
@@ -109,7 +109,7 @@
 		</div>
 	      </div>
 	      <p><t style="color:#0087BD">{% trans "Age" %}:</t> {{ notification.sender.info.age }}<p>
-	      <p><t style="color:#0087BD">{% trans "Sex" %}:</t> {% if notification.sender.info.sex %}{% trans "Male" %} {% elif notification.sender.info.sex == None %} {% else %} {% trans "Female" %} {% endif %}<p>
+	      <p><t style="color:#0087BD">{% trans "Sex" %}:</t> {% trans notification.sender.info.get_sex %}<p>
 	      <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ notification.sender.info.location }}</p>
 	      <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for language in notification.sender.languages.all %}{% trans language.language.name %}, {% endfor %}</p>
 	    </div>
@@ -256,7 +256,7 @@
 	    </div>
 	    <div class="col-md-4" style="margin-top:-1%">
 	      <p><t style="color:#0087BD">{% trans "Age" %}:</t> {{ notification.sender.info.age }}<p>
-	      <p><t style="color:#0087BD">{% trans "Sex" %}:</t> {% if notification.sender.info.sex %}{% trans "Male" %} {% elif notification.sender.info.sex == None %} {% else %} {% trans "Female" %} {% endif %}<p>
+	      <p><t style="color:#0087BD">{% trans "Sex" %}:</t> {% trans notification.sender.info.get_sex %}<p>
 	      <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ notification.sender.info.location }}</p>
 	      <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for language in notification.sender.languages.all %}{% trans language.language.name %}, {% endfor %}</p>
 	    </div>

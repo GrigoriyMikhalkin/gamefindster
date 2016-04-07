@@ -53,6 +53,20 @@ class UserInfo(models.Model):
 
         return False
 
+    def get_birthdate(self):
+        if self.birthdate is None:
+            return None
+        return self.birthdate.strftime("%Y-%m-%d")
+
+    def get_sex(self):
+        if self.sex == None:
+            return "Undefined"
+        elif self.sex:
+            return "Male"
+        return "Female"
+            
+
+
     
 class UserSettings(models.Model):
     user = models.OneToOneField(User,related_name="settings")

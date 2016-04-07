@@ -237,7 +237,7 @@
 <script src="{% static 'js/jquery.datetimepicker.full.min.js' %}"></script>
 
 <script type="text/javascript">
-  jQuery.datetimepicker.setLocale("ru");
+  jQuery.datetimepicker.setLocale("{{ locale }}");
   
   $("#id_start_time").datetimepicker({
       onChangeDateTime: function(dp,$input){

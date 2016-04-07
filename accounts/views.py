@@ -13,6 +13,7 @@ from django.template.response import TemplateResponse
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import resolve_url
 from django.utils.http import is_safe_url
+from django.utils.translation import to_locale, get_language
 
 # Import geo-stuff
 from ipware.ip import get_real_ip
@@ -28,6 +29,11 @@ from django.contrib.auth.models import User
 from cities.models import City, Country
 from languages_plus.models import Language
 
+SEX_TYPES = {
+    "undefined": None,
+    "male": True,
+    "female": False,
+}
 
 def is_owner(user,pic):
     return  user == pic.user
@@ -121,9 +127,22 @@ def pic_change(request,pid):
 @login_required(login_url="/accounts/login/")
 def user_settings(request,uid):
     user = get_object_or_404(User,id=uid)
+    locale = to_locale(get_language())
 
     if user != request.user:
         return HttpResponseRedirect('/')
+
+    # Birthdate setting
+    birthdate = request.POST.get("birthdate")
+    if birthdate:
+        user.info.birthdate = birthdate
+        user.info.save()
+    
+    # Sex setting
+    sex = request.POST.get("sex")
+    if sex:
+        user.info.sex = SEX_TYPES[sex]
+        user.info.save()
 
     # Languages setting
     selected_languages = request.POST.getlist("chk_languages[]")
@@ -190,6 +209,7 @@ def user_settings(request,uid):
         "user_platforms": user_platforms,
         "languages": languages,
         "user_languages": user_languages,
+        "locale": locale,
     }
     
     return render(request, "accounts/settings_general.html", context)

@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from .forms import EventForm
 from endless_pagination.decorators import page_template
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import to_locale, get_language
 
 # Import models
 from .models import (Game, Event)
@@ -50,6 +51,7 @@ def show_game_events(request,id,template="base/game_detail.html",extra_context=N
     event_list = game.event_set.filter(is_full=False,before__gt=timezone.now())
     form = None
     location_value = None
+    locale = to_locale(get_language())
     
     if user.is_authenticated():
 
@@ -151,6 +153,7 @@ def show_game_events(request,id,template="base/game_detail.html",extra_context=N
         "request": request,
         "form": form,
         "location_value": location_value,
+        "locale": locale,
     }
     if extra_context is not None:
         context.update(extra_context)

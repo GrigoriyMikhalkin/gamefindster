@@ -48,7 +48,7 @@
 	<p>{% trans "Platforms" %}:</p>
       </div>
       <div class="col-md-6" style="color:#0087BD">
-	<p>{{ user.info.sex }}</p>
+	<p>{{ user.info.get_sex }}</p>
 	<p>{{ location }}</p>
 	<p>{{ user.info.birthdate }}</p>
 	{% if user.languages.all.count == 0 %}
@@ -276,9 +276,9 @@
 	  <textarea id="broadcast-message" name="broadcast-text" rows="10" style="width:100%"></textarea>
 	  <label for="select-friends">{% trans "Choose to whom you want to send this message" %}: </label>
 	  <select id="select-friends" name="friend-filter">
-	    <option value="all" selected>All friends</option>
-	    <option value="online" >Friends online</option>
-	    <option value="offline" >Friends offline</option>
+	    <option value="all" selected>{% trans "All friends" %}</option>
+	    <option value="online" >{% trans "Friends online" %}</option>
+	    <option value="offline" >{% trans "Friends offline" %}</option>
 	  </select>
 	  <p><input type='submit' value="{% trans 'Send' %}" /></p>
 	</form>
