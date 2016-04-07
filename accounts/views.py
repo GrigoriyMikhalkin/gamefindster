@@ -175,7 +175,18 @@ def user_settings(request,uid):
         latitude = location_info["latitude"]
         pnt = Point(longitude,latitude)
 
-        m_city = City.objects.get(country__name=m_country,name=m_city,location__distance_lt=(pnt,D(km=10)))
+        try:
+            m_city = City.objects.get(country__name=m_country,name=m_city,location__distance_lt=(pnt,D(km=10)))
+        except City.DoesNotExist:
+            location_info = g.city("213.208.167.83")
+            m_city = location_info["city"]
+            m_country = location_info["country_name"]
+
+            longitude = location_info["longitude"]
+            latitude = location_info["latitude"]
+            pnt = Point(longitude,latitude)
+            m_city = City.objects.get(country__name=m_country,name=m_city,location__distance_lt=(pnt,D(km=10)))      
+        
         user.info.city = m_city
         user.info.save()
 
