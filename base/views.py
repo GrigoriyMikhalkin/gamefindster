@@ -28,6 +28,9 @@ def index(request,template="base/index.html",extra_context=None):
     """
     Shows scrollable list of most popular games
     """
+    if request.user.is_authenticated() and request.user.info.is_first_time():
+        return HttpResponseRedirect("/accounts/settings/location/%s" % request.user.id)
+    
     games = Game.objects.all()
     context = {
         "games": games,

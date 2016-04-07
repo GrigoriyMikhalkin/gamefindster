@@ -100,11 +100,11 @@
 	<hr>
 	<ul class="sidebar-nav">
 	  <li {% if request.path == "/" %} class="selected" {% endif %}><h3><a href="/"><span class="btn-lg glyphicon glyphicon-home" aria-hidden="true" style="color:#337ab7;"></span>{% trans "Home" %}</a></h3></li>
-	  <li {% if request.path == "/social/events/{{ request.user.id }}" %} class="selected" {% endif %}><h3><a href="/social/events/{{ request.user.id }}"><span class="btn-lg glyphicon glyphicon-calendar" aria-hidden="true" style="color:#337ab7;"></span>{% trans "Events" %}</a></h3></li>
+	  <li {% if "/social/events/" in request.path %} class="selected" {% endif %}><h3><a href="/social/events/{{ request.user.id }}"><span class="btn-lg glyphicon glyphicon-calendar" aria-hidden="true" style="color:#337ab7;"></span>{% trans "Events" %}</a></h3></li>
 	  <li {% if request.path == "/social/messages/" %} class="selected" {% endif %}><h3><a href="/social/messages/"><span class="btn-lg glyphicon glyphicon-comment" aria-hidden="true" style="color:#337ab7;"></span>{% trans "Messages" %}</a></h3></li>
 	  <li {% if request.path == "/social/notifications/" %} class="selected" {% endif %}><h3><a href="/social/notifications/"><span class="btn-lg glyphicon glyphicon-bullhorn" aria-hidden="true" style="color:#337ab7;"></span>{% trans "Notifications" %}</a></h3></li>
 	  <li {% if request.path == "/social/contacts/" %} class="selected" {% endif %}><h3><a href="/social/contacts/"><span class="btn-lg glyphicon glyphicon-user" aria-hidden="true" style="color:#337ab7;"></span>{% trans "Contacts" %}</a></h3></li>
-	  <li {% if "/accounts/settings/" in request.path %} class="selected" {% endif %}><h3><a href="/accounts/settings/general/{{ request.user.id }}"><span class="btn-lg glyphicon glyphicon-cog" aria-hidden="true" style="color:#337ab7;"></span>{% trans "Settings" %}</a></h3></li>
+	  <li {% if "/accounts/settings/" in request.path %} class="selected" {% endif %}><h3><a href="/accounts/settings/{{ request.user.id }}"><span class="btn-lg glyphicon glyphicon-cog" aria-hidden="true" style="color:#337ab7;"></span>{% trans "Settings" %}</a></h3></li>
 	</ul>
       </div>
       {% endif %}

@@ -26,6 +26,5 @@ urlpatterns = [
     url(r'^login/$', views.login),
     url(r'^logout/$', views.logout),
     url(r'^profile/$', views.redirect_home),
-    url(r'^settings/general/(?P<uid>\d+)$', views.user_general_settings),
-    url(r'^settings/location/(?P<uid>\d+)$', views.user_location_settings),
+    url(r'^settings/(?P<uid>\d+)$', views.user_settings),
 ]

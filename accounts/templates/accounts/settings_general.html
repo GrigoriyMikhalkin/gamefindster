@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 
+{% load static from staticfiles %}
 {% load i18n %}
+{% load l10n %}
+{% load tz %}
 
 {% block content %}
-
-<ul class="nav nav-tabs">
-  <li class="active"><a href="#">{% trans "General" %}</a></li>
-  <li><a href="/accounts/settings/location/{{ request.user.id }}">{% trans "Location" %}</a></li>
-</ul>
 
 <form method="POST" style="margin-top:2%">{% csrf_token %}
   <label for="chk_platforms[]">{% trans "Select platforms that you own" %}:</label>
@@ -18,4 +16,104 @@
   </div>
   <input type="submit" class="btn btn-primary btn-sm" value={% trans "Apply" %} style="margin-top:2%">
 </form>
+
+{% get_current_timezone as TIME_ZONE %}
+<form method="POST" style="margin-top:2%">{% csrf_token %}
+  <label for="timezone">{% trans "Time zone" %}:</label>
+  <select name="timezone">
+    {% for tz in timezones %}
+    <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected="selected"{% endif %}>{{ tz }}</option>
+    {% endfor %}
+  </select>
+  <t>{% trans "*will be set automatically according to your location" %}</t>
+</form>
+
+<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+<div id="map" style="height:550px;width:750px;"></div>
+<form method="POST" id="location-form">{% csrf_token %}
+  <input type="hidden" name="latitude" value="" id="latitude" />
+  <input type="hidden" name="longitude" value="" id="longitude"/>
+  <input type="submit" value="{% trans 'Set location' %}" class="btn btn-primary btn-sm" role="button" style="margin-left:667px;margin-top:1%" id="set-location"></input>
+</form>
+
 {% endblock content %}
+
+{% block js %}
+{{ block.super }}
+
+{% localize off %}
+<script type="text/javascript">
+  function initAutocomplete() {
+  var map = new google.maps.Map(document.getElementById("map"), {
+    center: {lat: {{ latitude }}, lng: {{ longitude }}},
+    zoom: 12,
+    minZoom: 12,
+    maxZoom: 12,
+    zoomControl: false,
+    streetViewControl: false,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+  
+  // Create the search box and link it to the UI element.
+  var input = document.getElementById('pac-input');
+  var autocomplete_options = {
+      types: ["(cities)"]
+  };
+  
+  var autocomplete = new google.maps.places.Autocomplete(input,autocomplete_options);
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+  // Bias the SearchBox results towards current map's viewport.
+  map.addListener('bounds_changed', function() {
+    autocomplete.setBounds(map.getBounds());
+  });
+
+  var marker = new google.maps.Marker({
+    map: map,
+    anchorPoint: new google.maps.Point({{ latitude }}, {{ longitude }})
+  });
+
+  // Listen for the event fired when the user selects a prediction and retrieve
+  // more details for that place.
+  autocomplete.addListener('place_changed', function() {
+    marker.setVisible(false);
+    var place = autocomplete.getPlace();
+    if (!place.geometry) {
+      window.alert("Autocomplete's returned place contains no geometry");
+      return;
+    }
+
+    // If the place has a geometry, then present it on a map.
+    if (place.geometry.viewport) {
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      map.setCenter(place.geometry.location);
+      map.setZoom(17);  // Why 17? Because it looks good.
+    }
+    marker.setIcon(/** @type {google.maps.Icon} */({
+      url: place.icon,
+      size: new google.maps.Size(71, 71),
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(17, 34),
+      scaledSize: new google.maps.Size(35, 35)
+    }));
+    marker.setPosition(place.geometry.location);
+    marker.setVisible(true);
+
+  });
+  $("#set-location").on("click", function(){
+      var center = map.getCenter();
+      var lat = center.lat();
+      var lng = center.lng();
+      
+      $("#latitude").val(lat);
+      $("#longitude").val(lng);
+  });
+  }
+</script>
+{% endlocalize %}
+
+<script	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWhh6SIcYmR-X3YlJY71kB8friJ1pmxjs&libraries=places&callback=initAutocomplete"
+async defer></script>
+
+{% endblock js %}

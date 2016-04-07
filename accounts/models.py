@@ -34,6 +34,7 @@ class UserInfo(models.Model):
     unread_notifications = models.PositiveSmallIntegerField(default=0)
     unread_messages = models.PositiveSmallIntegerField(default=0)
     last_active = models.DateTimeField(verbose_name="last active",null=True)
+    first_time = models.BooleanField(default=True)
 
     def age(self):
         if self.birthdate is None:
@@ -41,6 +42,15 @@ class UserInfo(models.Model):
         diff = datetime.now - birthdate.date
         return diff.year
 
+    def is_first_time(self):
+        if self.first_time:
+            self.first_time = False
+            self.save()
+            return True
+
+        return False
+
+    
 class UserSettings(models.Model):
     user = models.OneToOneField(User,related_name="settings")
 
