@@ -192,3 +192,17 @@ fieldset#body {
 input:focus {
     outline:none;
 }
+
+footer {
+    background:#F8F8F8;
+    height: 36px;
+    border: 1px solid #E7E7E7;
+}
+
+.twitter-share-button{
+    margin-top:1%;
+}
+
+.fb-like{
+    margin-top:4%;
+}
