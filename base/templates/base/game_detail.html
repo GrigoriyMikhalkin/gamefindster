@@ -91,8 +91,30 @@
     <div class="modal-content">
       <div class="modal-header">
 	<form method='POST'>{% csrf_token %}
-	  {{ form.as_p }}
-	  <input type='submit' value={% trans "Create event" %} />
+	  <div class="row">
+	    <div class="col-md-4" style="margin-top:-5%;margin-bottom:-4%">
+	      <h3>{% trans "Event name" %} :</h3>
+	    </div>
+	    <div class="col-md-8" style="margin-top:-1.5%;margin-bottom:-4%">
+	      <input id="id_name" maxlength="512" name="name" type="text" style="width:100%"/>
+	    </div>
+	  </div>
+	  <hr/>
+	  <h4>{% trans "Description" %}:</h4>
+	  <textarea id="id_description" name="description" rows="5" style="width:100%"></textarea>
+	  {{ form.participant_number.label_tag }}
+	  {{ form.participant_number }}
+	  {{ form.platform.label_tag }}
+	  {{ form.platform }}
+	  {{ form.languages.label_tag }}
+	  {{ form.languages }}
+	  <hr/>
+	  {{ form.start_time.label_tag }}
+	  {{ form.start_time }}
+	  {{ form.before.label_tag }}
+	  {{ form.before }}
+	  <hr/>
+	  <input type='submit' class="btn btn-success" value={% trans "Create event" %} />
 	</form>
       </div>
     </div>

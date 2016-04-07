@@ -91,8 +91,8 @@ def show_game_events(request,id,template="base/game_detail.html",extra_context=N
             
             langs = request.POST.getlist("chk_languages[]")
             user_languages = user.languages.all()
-            user_languages.filter(language__name__in=langs).update(search=True)
-            user_languages.exclude(language__name__in=langs).update(search=False)
+            user_languages.filter(language__in=langs).update(search=True)
+            user_languages.exclude(language__in=langs).update(search=False)
 
         elif request.POST.get("language-off"):
             user_search_settings.language=False
@@ -124,7 +124,7 @@ def show_game_events(request,id,template="base/game_detail.html",extra_context=N
             langs = [ lang.language for lang in user.languages.filter(search=True)]
             event_list = event_list.filter(languages__language__in=langs).distinct()
 
-        form = EventForm(request.POST or None)
+        form = EventForm(user,request.POST or None)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.game = game
@@ -140,7 +140,7 @@ def show_game_events(request,id,template="base/game_detail.html",extra_context=N
                 instances = (LanguageToEvent(event=instance,language=lang.language) for lang in request.user.languages.all() )
                 LanguageToEvent.objects.bulk_create(instances)
             else:
-                instances = (LanguageToEvent(event=instance,language=Language.objects.get(name=name)) for name in languages)
+                instances = (LanguageToEvent(event=instance,language=name) for name in languages)
                 LanguageToEvent.objects.bulk_create(instances)
             
             return HttpResponseRedirect("/game/%s" % id)

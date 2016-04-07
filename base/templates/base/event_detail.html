@@ -35,13 +35,19 @@
       <p>{% trans "Host" %}:</p>
       <p>{% trans "Start time" %}:</p>
       <p>{% trans "Platform" %}:</p>
+      <p>{% trans "Languages" %}:</p>
       <p>{% trans "Created" %}:</p>
       <p>{% trans "Active before" %}:</p>
     </div>
     <div class="col-md-6" style="color:#0087BD">
       <a href="/social/user/{{ event.owner.id }}"><p>{{ event.owner }}</p></a>
       <p>{{ event.start_time }}</p>
-      <p><img src="{{ event.platform.logo.thumbnail.url }}" class="img-responsive" alt="{{ event.platform.name }}"/>None</p>
+      <p><img src="{{ event.platform.logo.thumbnail.url }}" class="img-responsive" alt="{{ event.platform.name }}" style="height:20px" /></p>
+      <p>
+	{% for lang in event.languages.all %}
+	{% trans lang.language %},
+	{% endfor %}
+      </p>
       <p>{{ event.created }}</p>
       <p>{{ event.before }}</p>
     </div>

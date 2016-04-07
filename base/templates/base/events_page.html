@@ -15,7 +15,7 @@
 	    <p><t style="color:#0087BD">{% trans "Start time" %}:</t> {{ event.start_time }}<p>
 	    <p><t style="color:#0087BD">{% trans "Full" %}:</t> {{ event.participation_set.count }}/{{ event.participant_number }}</p>
 	    <p><t style="color:#0087BD">{% trans "Location" %}:</t> {{ event.location.country }}, {{ event.location }}</p>
-	    <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for lang in event.languages.all %} {% trans lang.language.name %}, {% endfor %}</p>
+	    <p><t style="color:#0087BD">{% trans "Languages" %}:</t> {% for lang in event.languages.all %} {% trans lang.language %}, {% endfor %}</p>
 	    <div class="row">
 	      <div class="col-md-3">
 		<t style="color:#0087BD">{% trans "Platform" %}:</t>

@@ -93,6 +93,12 @@ class LanguageToUser(models.Model):
     language = models.CharField(max_length=64,null=True)
     search = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.language
+
+    def __unicode__(self):
+        return self.language
+
 
 class LanguageToEvent(models.Model):
     event = models.ForeignKey(Event,related_name="languages",null=True)
