@@ -167,7 +167,7 @@ def user_settings(request,uid):
     if m_city == None:
         user_ip = get_real_ip(request)
         g = GeoIP2()
-        location_info = g.city("213.208.167.84")
+        location_info = g.city(user_ip)
         m_city = location_info["city"]
         m_country = location_info["country_name"]
 
