@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^accounts/', include("registration.backends.hmac.urls")),
     url(r'^social/', include("my_social.urls")),
     url('', include('social.apps.django_app.urls', namespace='social')),
+    url(r'^ratings/', include('star_ratings.urls', namespace='ratings', app_name='ratings')),
 ]
 
 
