@@ -2,13 +2,29 @@
 
 {% load i18n %}
 
-{% lazy_paginate 12 games %}
-<div class="row" style="margin-top:1%">
+{% lazy_paginate 8 games %}
+<div class="row" style="margin-top:0%">
   {% for game in games %}
-  <div class="col-md-3">
-    <div class="thumbnail" style="border-radius:20px;background:#F5F5DC">
+  <div class="col-md-3" style="margin-bottom:5%">
+    <div class="capture">
       <a href="/game/{{ game.id }}">
-	<img src="{{ game.cover.large.url }}" class="img-responsive" style="border-radius:20px 20px 0 0"/>
+	<img src="{{ game.cover.large.url }}" class="img-responsive" style="height:300px;width:225px"/>
+	<div class="caption" style="">
+	  <h4 style="color:black;">{{ game.get_name|truncatechars:30 }}</h4>
+      </a>
+      <p class="text-muted" style=""> {{ game.number_of_events }} {% trans "events is active" %}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% show_more %}
+
+<!--
+  <div class="col-md-3" style="margin-bottom:3%">
+    <div class="thumbnail" style="background:#0087BD">
+      <a href="/game/{{ game.id }}">
+	<img src="{{ game.cover.large.url }}" class="img-responsive" style="height:300px;width:225px"/>
 	<div class="caption" style="">
 	  <h3 style="color:black;text-align:center">{{ game.get_name|truncatechars:22 }}</h3>
       </a>
@@ -16,6 +32,4 @@
       </div>
     </div>
   </div>
-  {% endfor %}
-</div>
-{% show_more %}
+-->

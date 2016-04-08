@@ -11,16 +11,20 @@ body {
 }
 
 #search-box{
-    border-radius:10px;
-    height:30px;
+    margin-left:210px;
+    height:32px;
+    width:450px;
 }
 
 #search-button{
     height:30px;
-    border-radius:0 10px 10px 0;
     z-index:2;
     margin-left:-6%;
-    margin-top:-1.2%;
+    margin-top:-5px;
+}
+
+#catbar{
+    margin-left:280px;
 }
 
 .img-circle{
@@ -46,15 +50,14 @@ hr{
 }
 
 #sidebar{
-    z-index: 1;
+    z-index: 5;
     position: fixed;
+    margin-top:-70px;
     width: 280px;
     height: 400px;
     overflow-y: hidden;
     background: white;
     border: solid 1px;
-    border-radius: 0px 0px 20px 0px;
-    box-shadow: 3px 3px 15px 3px #888888;
     transition: all 1s ease;
 }
 

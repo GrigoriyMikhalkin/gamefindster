@@ -19,20 +19,18 @@
       <header class="main-header">
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 	  {% if request.user.is_authenticated %}
-	  <a href="#sidebar" id="sidebar-collapse" class="btn navbar-left btn-lg" val="on"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
-	  <a href="#" id="sidebar-expand" class="btn navbar-left btn-lg" val="on"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+	  <a href="#sidebar" id="sidebar-collapse" class="btn navbar-left btn-lg" val="on" style="margin-top:-0.4%"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+	  <a href="#" id="sidebar-expand" class="btn navbar-left btn-lg" val="on" style="margin-top:-0.4%"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
 	  {% else %}
 	  <a href="/" class="btn navbar-left btn-lg"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a>
 	  {% endif %}
+	  <form method="GET" action="/search" id="search" class="navbar-form navbar-left">
+	    <input name="q" size="40" type="text" id="search-box" placeholder={% trans "Search games..." %}/>
+	    <button id="search-button" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-search"></span></button>
+	  </form>
 	  <div class="navbar-custom-menu">
 	    {% if request.user.is_authenticated %}
 	    <ul class="nav navbar-nav navbar-right">
-	      <li>
-		<form method="GET" action="/search" id="search" class="navbar-form">
-		    <input name="q" size="40" type="text" id="search-box" placeholder={% trans "Search games..." %}/>
-		  <button id="search-button" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-search"></span></button>
-		</form>
-	      </li>
 	      <li>
 		<a href="/social/messages/" class="btn btn-lg"><span class="glyphicon glyphicon-envelope" aria-hidden="true">
 		    <span class="badge" id="new-message-badge" style="margin-top:-45%;margin-left:-40%;background-color:red">{{ request.user.info.unread_messages }}</span>
@@ -87,6 +85,8 @@
 	  </div>
 	</nav>
       </header>
+      <nav id="catbar" class="navbar navbar-default navbar-fixed" role="navigation">
+      </nav>
 
       {% if request.user.is_authenticated %}
       <div id="sidebar" class="collapseSidebar">
@@ -144,7 +144,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="{% static 'js/base.js' %}"></script>
     <script src="{% static 'js/endless-pagination.js' %}"></script>
-    <script src="http://188.166.19.65:8002/socket.io/socket.io.js"></script>
+    <script src="http://localhost:8002/socket.io/socket.io.js"></script>
 
     <script type="text/javascript" >
       {% if request.user.info.unread_messages == 0 %}
@@ -156,7 +156,7 @@
       {% endif %}
       
       $(document).ready(function() {
-          var socket = io("http://188.166.19.65:8002");
+          var socket = io("http://localhost:8002");
 
           socket.on("message", function(message) {
               var message_json = jQuery.parseJSON(message);
