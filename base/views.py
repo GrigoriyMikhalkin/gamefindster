@@ -164,16 +164,19 @@ def show_game_events(request,id,template="base/game_detail.html",extra_context=N
 def show_event_details(request,id):
     event = get_object_or_404(Event, id=id)
     participant = None
+    template = "base/event_detail.html"
     
     if request.user.is_authenticated():
         participant = event.participation_set.filter(participant=request.user)
+        if not event.isActive():
+            template = "base/after_event_detail.html"
 
     context = {
         "event": event,
         "request": request,
         "participant": participant,
     }
-    return render(request,"base/event_detail.html",context)
+    return render(request,template,context)
 
 
 @page_template("base/games_index_page.html")

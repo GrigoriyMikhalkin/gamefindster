@@ -26,11 +26,15 @@ body {
 #catbar{
 }
 
+/* Image styling */
+
 .img-circle{
     height: 60px;
     margin-top: 5%;
     margin-left: 5%;
 }
+
+/* Sidebar styling */
 
 #username{
     font-size: large;
@@ -202,9 +206,9 @@ footer {
 }
 
 .twitter-share-button{
-    margin-top:1%;
+    margin-top:10%;
 }
 
 .fb-like{
-    margin-top:4%;
+    margin-top:10%;
 }

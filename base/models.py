@@ -77,7 +77,7 @@ class Event(models.Model):
         """
         Check if Event is still active
         """
-        return(self.before >= timezone.now())
+        return(self.start_time >= timezone.now())
 
     def __unicode__(self):
         return self.name

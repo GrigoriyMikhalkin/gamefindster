@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% load static from staticfiles %}
+{% load i18n %}
+{% load ratings %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+<link rel="stylesheet" href="{% static 'css/event_detail.css' %}">
+{% endblock css %}
+
+{% block content %}
+
+<div class="row" style="margin-top:-3%">
+  <div class="col-md-2">
+    <a href="/game/{{ event.game.id }}">
+      <div class="caption">
+	<img src="{{ event.game.cover.large.url }}" class="img-responsive img-event-desktop"/>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-10">
+    <h1>{{ event.name }}</h1>
+
+    <hr>
+
+    <div class="col-md-6" style="color:grey">
+      <p>{% trans "Game" %}:</p>
+      <p>{% trans "Host" %}:</p>
+      <p>{% trans "Start time" %}:</p>
+      <p>{% trans "Platform" %}:</p>
+      <p>{% trans "Languages" %}:</p>
+    </div>
+    <div class="col-md-6" style="color:#0087BD">
+      <a href="/game/{{ event.game.id }}"><p>{{ event.game.name }}</p></a>
+      <a href="/social/user/{{ event.owner.id }}"><p>{{ event.owner }}</p></a>
+      <p style="color:red">Passed</p>
+      <p><img src="{{ event.platform.logo.thumbnail.url }}" class="img-responsive" alt="{{ event.platform.name }}" style="height:20px" /></p>
+      <p>
+	{% if event.languages.count == 0 %}
+	{% trans "Undefined" %}
+	{% else %}
+	{% for lang in event.languages.all %}
+	{% trans lang.language %},
+	{% endfor %}
+	{% endif %}
+      </p>
+    </div>
+  </div>
+</div>
+
+<hr/>
+
+{% if participant %}
+
+<h2 style="margin-top:1%;color:black;;height:30px;">{% trans "Please, rate other participants:" %}</h2>
+
+<div class="row" style="margin-top:5%">
+{% for participation in event.participation_set.all %}
+<div class="col-md-2">
+  <a href="/social/user/{{ participation.participant.id }}">
+  <div class="caption">
+    <center><img class="img-user" src="{{ participation.participant.info.currentpic.avatar.thumbnail.url }}"> </img></center>
+    <p style="text-align:center">{{ participation.participant.username|truncatechars:12 }}</p>
+  </div>
+  </a>
+</div>
+<div class="col-md-10">
+{% ratings participation.participant %}
+</div>
+{% endfor %}
+</div>
+
+{% endif %}
+
+{% endblock content %}
+
+{% block modals %}
+
+<div class="modal fade" id="rating-comment" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+	<form action="" method='POST'>{% csrf_token %}
+	  <p>{% trans "You can leave a comment about user:" %}</p>
+	  <textarea id="cancel-event-message" name="cancel-text" rows="10" style="width:100%"></textarea>
+	  <p><input type='submit' value={% trans "Send" %} /></p>
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock modals %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+
+<script type="text/javascript">
+  $(".star-ratings-rate-action").click(function(){
+      $("#rating-comment").modal("show");
+  });
+</script>
+{% endblock js %}
