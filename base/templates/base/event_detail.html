@@ -1,20 +1,25 @@
 {% extends "base.html" %}
 
+{% load static from staticfiles %}
 {% load i18n %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/event_detail.css' %}">
+{% endblock css %}
 
 {% block content %}
 
-<div class="row">
-  <div class="col-md-4">
+<div class="row" style="margin-top:-3%">
+  <div class="col-md-2" style="margin-top:4%">
     <a href="/game/{{ event.game.id }}">
       <div class="caption">
-	<img src="{{ event.game.cover.large.url }}" class="img-responsive" />
-	<center><h2>{{ event.game.name }}</h2></center>
+	<img src="{{ event.game.cover.large.url }}" class="img-responsive img-event-desktop" />
       </div>
     </a>
   </div>
 
-  <div class="col-md-8">
+  <div class="col-md-10">
     <h1>{{ event.name }}</h1>
 
     {% if request.user.is_authenticated %}
@@ -32,26 +37,26 @@
     <hr>
 
     <div class="col-md-6" style="color:grey">
+      <p>{% trans "Game" %}:</p>
       <p>{% trans "Host" %}:</p>
       <p>{% trans "Start time" %}:</p>
       <p>{% trans "Platform" %}:</p>
       <p>{% trans "Languages" %}:</p>
-      <p>{% trans "Created" %}:</p>
     </div>
     <div class="col-md-6" style="color:#0087BD">
+      <a href="/game/{{ event.game.id }}"><p>{{ event.game.name }}</p></a>
       <a href="/social/user/{{ event.owner.id }}"><p>{{ event.owner }}</p></a>
       <p>{{ event.start_time }}</p>
       <p><img src="{{ event.platform.logo.thumbnail.url }}" class="img-responsive" alt="{{ event.platform.name }}" style="height:20px" /></p>
       <p>
 	{% if event.languages.count == 0 %}
-	{% trans "Undefined" %}
+	{% trans "No selected languages" %}
 	{% else %}
 	{% for lang in event.languages.all %}
 	{% trans lang.language %},
 	{% endfor %}
 	{% endif %}
       </p>
-      <p>{{ event.created }}</p>
     </div>
   </div>
 </div>

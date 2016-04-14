@@ -195,15 +195,17 @@ def user_settings(request,uid):
         lng = float(request.POST.get("longitude"))
         pnt = Point(lng,lat)
 
-        m_city = City.objects.get(location__distance_lt=(pnt,D(km=2)))
+        m_city = City.objects.get(location__distance_lt=(pnt,D(km=5)))
         user.info.city = m_city
         user.info.save()
 
     m_country = m_city.country.name
     longitude = m_city.location.x
     latitude = m_city.location.y
-      
-    tz = request.POST.get('timezone')
+
+    tz = request.POST.get("auto_tz")
+    if not tz:
+        tz = request.POST.get("timezone")
     if tz:
         user.info.timezone = tz
         user.info.save()

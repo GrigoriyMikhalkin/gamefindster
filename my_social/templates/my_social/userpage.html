@@ -19,9 +19,8 @@
       </div>
     </div>
 
-    <div class="col-md-9">
+    <div class="col-md-9" style="margin-top:-1.7%">
       <h2>{{ user.username }}</h2>
-      <p>{{ user.info.status_message }}.</p>
       {% if request.user.is_authenticated %}
       {% if request.user != user %}
       <a href="#message" class="btn btn-primary btn-sm" role="button" data-toggle="modal">{% trans "Send message" %}</a>
@@ -41,6 +40,7 @@
       {% endif %} -->
 
       <div class="col-md-6" style="color:grey">
+	<p>{% trans "Rating" %}:</p>
 	<p>{% trans "Sex" %}:</p>
 	<p>{% trans "Current location" %}:</p>
 	<p>{% trans "Birthday" %}:</p>
@@ -48,6 +48,13 @@
 	<p>{% trans "Platforms" %}:</p>
       </div>
       <div class="col-md-6" style="color:#0087BD">
+	<p>
+	  {% if user_rating.count > 10 %}
+	  {{ user_rating.average }}
+	  {% else %}
+	  {% trans "Not enough votes yet" %}
+	  {% endif %}
+	</p>
 	<p>{{ user.info.get_sex }}</p>
 	<p>{{ location }}</p>
 	<p>{{ user.info.birthdate }}</p>

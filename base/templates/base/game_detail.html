@@ -8,6 +8,7 @@
 {{ block.super }}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/6.1.5/css/bootstrap-slider.min.css">
 <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.datetimepicker.css' %}"/ >
+<link rel="stylesheet" type="text/css" href="{% static 'css/game_detail.css' %}"/ >
 <style>
   #loc-slider .slider-track-high {
 	background: red;
@@ -24,11 +25,11 @@
 {% block content %}
 
 <div class="row" style="margin-top:1%">
-  <div class="col-md-3">
-    <img src="{{ game.cover.large.url }}" class="img-responsive" />
+  <div class="col-md-2">
+    <img src="{{ game.cover.large.url }}" class="img-responsive img-event-desktop" />
   </div>
 
-  <div class="col-md-9" style="margin-top:-1%">
+  <div class="col-md-10" style="margin-top:-1%">
     <h1 style="font-family:utopia">{{ game.name }}</h1>
     <hr>
     <div class="col-md-2" style="color:grey">

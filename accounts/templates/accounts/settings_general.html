@@ -54,13 +54,15 @@
   
   {% get_current_timezone as TIME_ZONE %}
   <label for="timezone">{% trans "Time zone" %}:</label>
-  <select name="timezone">
+  <select name="timezone" id="timezone">
     {% for tz in timezones %}
     <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected="selected"{% endif %}>{{ tz }}</option>
     {% endfor %}
   </select>
+  <input type="hidden" name="auto_tz" id="auto_tz" value=""/>
   <t>{% trans "*will be set automatically according to your location" %}</t>
 
+  <input id="pac-input" class="controls" type="text" placeholder="Search Box" style="width:30%;height:6.5%;margin-top:1%">
   <div id="map" style="height:550px;width:750px;"></div>
   <input type="hidden" name="latitude" value="" id="latitude" />
   <input type="hidden" name="longitude" value="" id="longitude"/>
@@ -77,6 +79,24 @@
 
 {% localize off %}
 <script type="text/javascript">
+  function setTimeZone(lat,lng){
+      var xmlhttp = new XMLHttpRequest();
+      var url = "https://maps.googleapis.com/maps/api/timezone/json?location=" + lat + "," + lng + "&timestamp=" + 1331766000 + "&key=AIzaSyAuZYSk0reDytPScHaO43CGKZJlqqrUF8k";
+      xmlhttp.onreadystatechange = function() {
+          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var myArr = JSON.parse(xmlhttp.responseText);
+            var tzId = myArr.timeZoneId;
+            var timezone = $("#auto_tz");
+            timezone.val(tzId);
+          }
+      };
+
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+  };
+
+  var isMarker = false;
+  
   function initAutocomplete() {
   var map = new google.maps.Map(document.getElementById("map"), {
     center: {lat: {{ latitude }}, lng: {{ longitude }}},
@@ -89,7 +109,7 @@
   });
   
   // Create the search box and link it to the UI element.
-  var input = document.getElementById('pac-input');
+  var input = document.getElementById("pac-input");
   var autocomplete_options = {
       types: ["(cities)"]
   };
@@ -110,8 +130,10 @@
   // Listen for the event fired when the user selects a prediction and retrieve
   // more details for that place.
   autocomplete.addListener('place_changed', function() {
+    isMarker = true;
     marker.setVisible(false);
     var place = autocomplete.getPlace();
+    setTimeZone(place.geometry.location.lat(),place.geometry.location.lng());
     if (!place.geometry) {
       window.alert("Autocomplete's returned place contains no geometry");
       return;
@@ -139,9 +161,11 @@
       var center = map.getCenter();
       var lat = center.lat();
       var lng = center.lng();
-      
-      $("#latitude").val(lat);
-      $("#longitude").val(lng);
+
+      if (isMarker){
+          $("#latitude").val(lat);
+          $("#longitude").val(lng);
+      }
   });
   }
 </script>

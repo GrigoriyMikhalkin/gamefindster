@@ -15,6 +15,7 @@ from .models import *
 from base.models import Event
 from accounts.models import UserInfo
 from languages_plus.models import Language
+from star_ratings.models import Rating
 
 
 # Create your views here.
@@ -32,6 +33,7 @@ def user_page(request,id):
     city = user.info.city
     m_events = None
     m_groups = None
+    user_rating = Rating.objects.for_instance(user)
 
     if request.user.is_authenticated():
         m_events = request.user.event_set.filter(is_active=True)
@@ -70,6 +72,7 @@ def user_page(request,id):
         "request": request,
         "form": form,
         "location": location,
+        "user_rating": user_rating,
     }
     return render(request, "my_social/userpage.html", context)
 
