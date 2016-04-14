@@ -154,16 +154,16 @@ from django.dispatch import receiver
 
 @receiver(post_save, sender=Message)
 def new_message(sender, **kwargs):
-    redis_client = redis.StrictRedis(host='localhost',port=6379,db=0)
+    redis_client = redis.StrictRedis(host='188.166.19.65',port=6379,db=0)
 
     message = kwargs['instance']
     receiver = message.receiver
+    user_info = UserInfo.objects.get(user=receiver)
     if not message.read:
-        user_info = UserInfo.objects.get(user=receiver)
         user_info.unread_messages = models.F("unread_messages") + 1
         user_info.save()
     
-    new_messages = receiver.info.unread_messages
+    new_messages = user_info.unread_messages
     
     for session in receiver.session_set.all():
         redis_client.publish(
@@ -177,7 +177,7 @@ def new_message(sender, **kwargs):
     
 @receiver(post_save, sender=Notification)
 def new_notification(sender, **kwargs):
-    redis_client = redis.StrictRedis(host='localhost',port=6379,db=0)
+    redis_client = redis.StrictRedis(host='188.166.19.65',port=6379,db=0)
 
     notification = kwargs['instance']
     receiver = notification.receiver
