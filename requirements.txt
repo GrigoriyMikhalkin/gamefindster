@@ -48,6 +48,6 @@ requests==2.9.1
 requests-oauthlib==0.6.1
 service-identity==16.0.0
 six==1.10.0
-urllib3==1.14
+urllib3==1.26.5
 watchdog==0.8.3
 zope.interface==4.1.3
